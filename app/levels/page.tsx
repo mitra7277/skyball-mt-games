@@ -3,14 +3,14 @@ import LevelGrid from "@/components/LevelGrid";
 import { LEVELS } from "@/lib/levels";
 export const metadata: Metadata = {
   title: "Levels",
-  description: "All 10 Sky Ball levels with descriptions, star counts and your unlocked progress.",
+  description: "Explore all 40 Sky Ball courses, read level tips, and track your unlocked progress.",
   alternates: { canonical: "/levels" },
 };
 export default function LevelsPage() {
   return (
     <div className="prose-page">
       <h1>Levels</h1>
-      <p>Finish a level to unlock the next. Unlocked levels open directly in the game. Progress is read from this browser.</p>
+      <p>Finish a course to unlock the next. Completed, unlocked, and locked states are saved in this browser. Select any unlocked course to play it.</p>
       <LevelGrid />
       <h2>Level guide</h2>
       <ol className="space-y-3">

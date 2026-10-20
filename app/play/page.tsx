@@ -4,7 +4,7 @@ import Link from "next/link";
 import GameFrame from "@/components/GameFrame";
 export const metadata: Metadata = {
   title: "Play Sky Ball Online",
-  description: "Play Sky Ball in your browser: a free 3D ball-balancing game with 10 levels. Works with keyboard or touch controls.",
+  description: "Play Sky Ball in your browser: a free 3D ball-balancing game with 40 levels. Works with keyboard or touch controls.",
   alternates: { canonical: "/play" },
 };
 export default function PlayPage() {

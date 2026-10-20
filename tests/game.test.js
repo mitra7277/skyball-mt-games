@@ -15,7 +15,7 @@ function makeCtx(store={},extra={}){const els={},L={};let raf=null;
  sb.window=sb;const ctx=vm.createContext(sb);vm.runInContext(src,ctx);
  return{ctx,els,L,store,frame:t=>raf(t),run:c=>vm.runInContext(c,ctx)}}
 let fails=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
-// --- Bot playthrough of all 10 levels
+// --- Bot playthrough of all 40 levels
 const botSrc=`(function(){
  const sup=zo=>boxes.some(b=>!b.rot&&Math.abs(p.x-b.x)<=b.hx+.2&&Math.abs(p.z-zo-b.z)<=b.hz&&b.y+b.hy<p.y&&b.y+b.hy>p.y-2.3);
  function ctrl(){let tx=0;for(const b of boxes)if(b.rot&&p.z<b.z+4.8&&p.z>b.z-3.5)tx=3.6;
@@ -26,12 +26,13 @@ const botSrc=`(function(){
   while(state==='play'&&steps<120*400){ctrl();step(1/120);steps++;if(p.y-lastY>3)falls++;lastY=p.y}
   return{done:state==='done',time:t,stars:got,total:stars.length,falls,steps,end:[p.x,p.y,p.z].map(n=>n.toFixed(1)).join(','),zs:boxes.filter(b=>b.rot||b.mv).map(b=>(b.rot?'BAR':'MV')+Math.round(b.z)).join(' ')}}})()`;
 const G=makeCtx();const bot=G.run(botSrc);
-const res=[];for(let i=0;i<10;i++){const r=bot(i);res.push(r);ok(r.done,`Level ${i+1} completed by bot: ${r.time.toFixed(1)}s, stars ${r.stars}/${r.total}, respawns ${r.falls}${r.done?'':' END@'+r.end+' '+r.zs}`)}
+const res=[];for(let i=0;i<40;i++){const r=bot(i);res.push(r);ok(r.done,`Level ${i+1} completed by bot: ${r.time.toFixed(1)}s, stars ${r.stars}/${r.total}, respawns ${r.falls}${r.done?'':' END@'+r.end+' '+r.zs}`)}
 // --- Unlocking + saved progress
-ok(G.run('save.unlocked')===10,'All levels unlocked after sequential completion (unlocked='+G.run('save.unlocked')+')');
-const saved=JSON.parse(G.store.sb);ok(saved.unlocked===10&&Object.keys(saved.best).length===10,'Progress & best times written to localStorage');
-const G2=makeCtx({sb:G.store.sb});ok(/data-l=9 >/.test(G2.els.ov.innerHTML)||!/data-l=9 disabled/.test(G2.els.ov.innerHTML),'Reloaded game shows level 10 unlocked from saved progress');
+ok(G.run('save.unlocked')===40,'All levels unlocked after sequential completion (unlocked='+G.run('save.unlocked')+')');
+const saved=JSON.parse(G.store.sb);ok(saved.unlocked===40&&Object.keys(saved.best).length===40&&Object.keys(saved.completed).length===40,'Progress, completion & best times written to localStorage');
+const G2=makeCtx({sb:G.store.sb});ok(/data-l=39 >/.test(G2.els.ov.innerHTML)||!/data-l=39 disabled/.test(G2.els.ov.innerHTML),'Reloaded game shows level 40 unlocked from saved progress');
 const G3=makeCtx();ok(/data-l=1 disabled/.test(G3.els.ov.innerHTML)&&!/data-l=0 disabled/.test(G3.els.ov.innerHTML),'Fresh save: only level 1 unlocked');
+const GB=makeCtx({sb:JSON.stringify({unlocked:99,best:{0:'oops'},completed:{0:'yes'}})});ok(GB.run('save.unlocked')===1&&!GB.els.ov.innerHTML.includes('oops'),'Invalid stored progress safely falls back to level 1');
 // --- Collisions, falling, checkpoints
 const T=G3.run(`(function(){start(1);const out={};
  p.set(0,3,-3);v.set(0,0,0);inp.x=0;inp.y=0;for(let i=0;i<240;i++)step(1/120);out.rest=p.y;out.grounded=grounded;

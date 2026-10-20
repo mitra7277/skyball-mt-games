@@ -3,7 +3,7 @@ import Link from "next/link";
 import { OWNER_NAME, SITE_NAME } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About Us",
-  description: "About MT Games and Sky Ball: 3D Challenge, a free 3D ball-balancing browser game with 10 original levels.",
+  description: "About MT Games and Sky Ball: 3D Challenge, a free 3D ball-balancing browser game with 40 original levels.",
   alternates: { canonical: "/about" },
 };
 export default function About() {
@@ -12,7 +12,7 @@ export default function About() {
       <h1>About {OWNER_NAME}</h1>
       <p>{OWNER_NAME} is the maker and publisher of {SITE_NAME}, a free browser game about rolling a ball across floating sky platforms. The aim is a game that opens quickly, is fun to replay and is easy to learn, on a computer or a phone, with no download and no account.</p>
       <h2>About the game</h2>
-      <p>{SITE_NAME} has 10 original levels with bridges, moving platforms and rotating obstacles. The levels, visuals and code were created for this game. It is drawn with Three.js, an open-source 3D library, and the website is built with Next.js.</p>
+      <p>{SITE_NAME} has 40 original levels with bridges, moving platforms and rotating obstacles. The levels, visuals and code were created for this game. It is drawn with Three.js, an open-source 3D library, and the website is built with Next.js.</p>
       <h2>What we aim for</h2>
       <ul>
         <li>A game that works properly in the browser, on desktop and mobile.</li>
