@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: light; }
+body { @apply bg-sky-50 text-slate-800 antialiased; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.prose-page h1 { @apply text-3xl sm:text-4xl font-extrabold text-sky-deep mb-4; }
+.prose-page h2 { @apply text-xl sm:text-2xl font-bold text-sky-deep mt-8 mb-2; }
+.prose-page p, .prose-page li { @apply leading-relaxed; }
+.prose-page p { @apply mb-3; }
+.prose-page ul { @apply list-disc pl-6 mb-3 space-y-1; }
+.prose-page a { @apply text-blue-700 underline; }
+.btn { @apply inline-block rounded-xl bg-yellow-400 px-6 py-3 font-bold text-slate-900 shadow hover:bg-yellow-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400; }
