@@ -1,6 +1,6 @@
 export const SITE_NAME = "Sky Ball: 3D Challenge";
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://your-domain.example").replace(/\/$/, "");
-export const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "";
+export const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "mitranjankumar3201@gmail.com";
 export const OWNER_NAME = "MT Games";
 export const BRAND_LINE = `${SITE_NAME} by ${OWNER_NAME}`;
 export const LAST_UPDATED = "October 2026";

@@ -34,9 +34,9 @@ The game test runs the real game script in Node with a stubbed DOM/Three.js, so 
 | Variable | Purpose |
 |---|---|
 | `NEXT_PUBLIC_SITE_URL` | Your real site address, e.g. `https://yourgame.com` (no trailing slash). Used for canonical URLs, sitemap and robots. |
-| `NEXT_PUBLIC_CONTACT_EMAIL` | The real MT Games contact email, shown on the Contact and Privacy pages. The contact form stays hidden until this is set. |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Optional override for the MT Games contact email shown on the Contact and Privacy pages. Defaults to the published address in `lib/site.ts`. |
 
-The brand name "MT Games" is set in `lib/site.ts`. No email address is invented: until `NEXT_PUBLIC_CONTACT_EMAIL` is set, the Contact page says the address is not yet available and hides the form. Also review the Privacy Policy and Terms of Use for your own situation (they are general templates, not legal advice).
+The brand name "MT Games" and published contact email are set in `lib/site.ts`. Set `NEXT_PUBLIC_CONTACT_EMAIL` in `.env.local` or your hosting environment to override the address. The Contact page links directly to email and opens a prefilled message in the visitor's email app. Also review the Privacy Policy and Terms of Use for your own situation (they are general templates, not legal advice).
 
 ## Deploy to Vercel (step by step)
 1. Create a GitHub repository and push this project:
