@@ -18,15 +18,23 @@ export default function HowToPlay() {
       </ul>
       <h2>Rules</h2>
       <ul>
-        <li>The ball has momentum. It keeps rolling a little after you let go.</li>
+        <li>The ball has momentum. It keeps rolling a little after you let go, so gentle corrections are usually better than sharp, repeated turns.</li>
         <li>Falling off the edge sends the ball back to the latest checkpoint you touched (or the start).</li>
-        <li>Moving platforms carry the ball. Rotating bars push it.</li>
-        <li>Finishing a level unlocks the next one.</li>
+        <li>Moving platforms carry the ball. Rotating bars push it sideways and can suddenly change your line.</li>
+        <li>Finishing a level unlocks the next one, and your local progress is saved in this browser.</li>
       </ul>
-      <h2>Checkpoints</h2>
-      <p>A white glowing circle is an untouched checkpoint. Roll through it and it turns gold. Your timer keeps running when you fall, so checkpoints save distance but not time.</p>
+      <h2>Checkpoint rhythm</h2>
+      <p>A white glowing circle is an untouched checkpoint. Roll through it and it turns gold. When you fall, the timer keeps going, so the checkpoint saves your position but not your elapsed time. In practice, this means you should take the next safe checkpoint, recover your line, and then commit to the next hazard rather than replaying the whole section from the start.</p>
+      <h2>How the 40 levels work</h2>
+      <p>The course set is built from a small number of repeating patterns: long bridges, moving platforms, narrow ledges, rotating bar hazards, and finish pads. The game will often ask you to slow down before a narrow crossing, then re-accelerate once you are centered. A steady line is usually safer than a dramatic last-second correction.</p>
+      <ul>
+        <li><b>Bridges:</b> keep your ball centered early. Entering at an angle creates a hard correction when the bridge narrows.</li>
+        <li><b>Moving platforms:</b> wait for a full motion cycle and then roll on when the platform lines up with the next safe surface.</li>
+        <li><b>Rotating bars:</b> use the edges where possible and avoid fighting a bar once it has already knocked you off line.</li>
+        <li><b>Finish pad:</b> the green pad ends the course once you reach it.</li>
+      </ul>
       <h2>Stars, score and times</h2>
-      <p>Each star is worth 100 points. Your score and time show at the top of the screen. The best time for each level is stored on your device.</p>
+      <p>Each star is worth 100 points. Your score and time show at the top of the screen. The best time for each level is stored on your device, which is useful for trying a cleaner route or a faster line after you know the checkpoint spacing.</p>
       <h2>Troubleshooting</h2>
       <ul>
         <li><b>Keys do nothing:</b> click inside the game once so it receives keyboard input.</li>

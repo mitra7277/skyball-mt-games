@@ -14,7 +14,8 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
   for(const m of h.matchAll(/href="(\/[^"#?]*)/g))links.add(m[1])}
  for(const l of links){if(l.startsWith('/_next')||l.startsWith('/favicon'))continue;const r=await fetch(base+l);ok(r.status===200,`link ${l} -> ${r.status}`)}
  const nf=await fetch(base+'/does-not-exist');const nh=await nf.text();ok(nf.status===404&&/404/.test(nh)&&/Page not found/.test(nh),'Custom 404 page served with status 404');
- const sm=await (await fetch(base+'/sitemap.xml')).text();ok(pages.every(p=>sm.includes('<loc>')&&sm.includes(p==='/'?'<loc>'+(process.env.EXPECT_URL||'https://your-domain.example')+'</loc>':p)),'sitemap.xml lists all 9 pages');
+ const expectedUrl=process.env.EXPECT_URL||'https://skyball-mt-games.vercel.app';
+ const sm=await (await fetch(base+'/sitemap.xml')).text();ok(pages.every(p=>sm.includes('<loc>')&&sm.includes(p==='/'?'<loc>'+expectedUrl+'</loc>':p)),'sitemap.xml lists all 9 pages');
  const rb=await (await fetch(base+'/robots.txt')).text();ok(/User-Agent: \*/i.test(rb)&&/Sitemap: /.test(rb),'robots.txt valid');
  for(const a of ['/game/skyball.html','/game/three.min.js','/favicon.svg']){const r=await fetch(base+a);ok(r.status===200,`asset ${a} -> ${r.status}`)}
  const g=await (await fetch(base+'/game/skyball.html')).text();ok(!/https?:\/\//.test(g.replace(/<[^>]*xmlns[^>]*>/g,'')),'Game page makes no external requests');

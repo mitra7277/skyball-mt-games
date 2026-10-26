@@ -1,5 +1,10 @@
 export const SITE_NAME = "Sky Ball: 3D Challenge";
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://your-domain.example").replace(/\/$/, "");
+export const DEFAULT_SITE_URL = "https://skyball-mt-games.vercel.app";
+const normalizeSiteUrl = (value?: string) => {
+  const trimmed = (value ?? DEFAULT_SITE_URL).trim().replace(/\/+$/, "");
+  return trimmed || DEFAULT_SITE_URL;
+};
+export const SITE_URL = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 export const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "mitranjankumar3201@gmail.com";
 export const OWNER_NAME = "MT Games";
 export const BRAND_LINE = `${SITE_NAME} by ${OWNER_NAME}`;

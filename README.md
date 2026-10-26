@@ -33,10 +33,10 @@ The game test runs the real game script in Node with a stubbed DOM/Three.js, so 
 ## Owner configuration (you must fill these in)
 | Variable | Purpose |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` | Your real site address, e.g. `https://yourgame.com` (no trailing slash). Used for canonical URLs, sitemap and robots. |
+| `NEXT_PUBLIC_SITE_URL` | Your real site address, e.g. `https://skyball-mt-games.vercel.app` (no trailing slash). Used for canonical URLs, sitemap and robots. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Optional override for the MT Games contact email shown on the Contact and Privacy pages. Defaults to the published address in `lib/site.ts`. |
 
-The brand name "MT Games" and published contact email are set in `lib/site.ts`. Set `NEXT_PUBLIC_CONTACT_EMAIL` in `.env.local` or your hosting environment to override the address. The Contact page links directly to email and opens a prefilled message in the visitor's email app. Also review the Privacy Policy and Terms of Use for your own situation (they are general templates, not legal advice).
+The brand name "MT Games" and published contact email are set in `lib/site.ts`. Set `NEXT_PUBLIC_CONTACT_EMAIL` in `.env.local` or your hosting environment to override the address. The Contact page links directly to email and opens a prefilled message in the visitor's email app. Keep the Privacy Policy and Terms of Use accurate for the services and features currently enabled on the site.
 
 ## Deploy to Vercel (step by step)
 1. Create a GitHub repository and push this project:
@@ -59,7 +59,7 @@ Alternative using the CLI: `npm i -g vercel && vercel` (preview) then `vercel --
 Vercel project → **Settings → Domains** → add your domain → add the DNS records Vercel shows at your registrar (an A record for the apex domain and a CNAME for `www`) → wait for verification. Then set `NEXT_PUBLIC_SITE_URL` to the new domain and redeploy.
 
 ## Google AdSense readiness notes
-The site has the pages AdSense reviewers expect (About, Contact, Privacy, Terms) and original content, but **no ad code is included** and approval is never guaranteed. If you add ads later: use only Google's official code, update the Privacy Policy (and add a consent banner where required), never place ads over the game, near the Play button or near the controls, and never encourage clicks.
+The site includes Google's AdSense script and a public `ads.txt` publisher entry. Their presence does not mean ads are currently displayed or that approval is guaranteed. Keep the Privacy Policy accurate about this setup, and follow Google's requirements for consent where applicable. Do not place ads over the game or near game controls, and never encourage clicks.
 
 ## Project structure
 ```

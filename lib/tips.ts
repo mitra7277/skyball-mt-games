@@ -15,4 +15,7 @@ export const TIPS: Tip[] = [
   { slug: "checkpoints-and-stars", title: "Checkpoints, stars and best times", body: [
     "Glowing circles are checkpoints. Roll through one and it turns gold. If you fall, you restart there with no penalty besides lost time, so you can take chances after you have claimed a checkpoint.",
     "Stars give points, and your best time for each level is saved in your browser. For a first run, collect stars as you go; for a time run, replay and skip the ones that cost seconds." ] },
+  { slug: "level-rhythm", title: "Building a safe level rhythm", body: [
+    "Many levels in the game are a chain of short decisions rather than one long hallway. A good rhythm is to approach a hazard slowly, settle your line on the platform, take the safe path through the center, and only then accelerate again once the next platform is clear.",
+    "This matters most on later courses, where a single bad angle can carry you into the drop or into a rotating bar. When a route is not obvious, take the checkpoint, reset, and repeat the same safe pattern instead of trying to force speed from the start." ] },
 ];
