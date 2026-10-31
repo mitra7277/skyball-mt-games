@@ -25,6 +25,7 @@ export default function CarRacingGame() {
     const game = racerRef.current;
     let raf = 0;
     let last = 0;
+    let lastRender = 0;
     let lastUi = 0;
     let swipeStart: number | null = null;
     const reset = (begin: boolean) => {
@@ -40,7 +41,7 @@ export default function CarRacingGame() {
     };
     commandRef.current = action;
     const resize = () => {
-      const box = canvas.getBoundingClientRect(); const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const box = canvas.getBoundingClientRect(); const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.max(1, Math.round(box.width * dpr)); canvas.height = Math.max(1, Math.round(box.height * dpr));
     };
     const onKey = (event: KeyboardEvent) => {
@@ -67,6 +68,8 @@ export default function CarRacingGame() {
       ctx.fillStyle = "#fef08a"; ctx.fillRect(x - width * .33, y + height * .27, width * .13, height * .05); ctx.fillRect(x + width * .2, y + height * .27, width * .13, height * .05);
     };
     const paint = (now: number) => {
+      if (now - lastRender < 32) { raf = requestAnimationFrame(paint); return; }
+      lastRender = now;
       const w = canvas.width; const h = canvas.height; const horizon = h * 0.23;
       const bg = ctx.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, "#160a36"); bg.addColorStop(.46, "#312e81"); bg.addColorStop(1, "#080d1f"); ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = "#f0abfc"; ctx.globalAlpha = .85; ctx.beginPath(); ctx.arc(w * .77, h * .14, h * .065, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
@@ -130,12 +133,12 @@ export default function CarRacingGame() {
 
   return (
     <section aria-label="Neon Drift racing game" className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-xl">
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-900 px-4 py-3 text-white"><p className="m-0 font-bold">Distance <span className="text-cyan-300">{distance} m</span><span className="mx-3 text-slate-600">·</span>Best <span className="text-amber-300">{best} m</span></p><button type="button" onClick={() => command("pause")} className="rounded-lg border border-white/20 px-3 py-1.5 text-sm font-bold hover:bg-white/10">{phase === "paused" ? "Resume" : "Pause"}</button></div>
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-900 px-4 py-3 text-white"><p className="m-0 font-bold">Distance <span className="text-cyan-300">{distance} m</span><span className="mx-3 text-slate-600">·</span>Best <span className="text-amber-300">{best} m</span></p><button type="button" onClick={() => command("pause")} className="min-h-11 rounded-lg border border-white/20 px-3 py-1.5 text-sm font-bold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fuchsia-300">{phase === "paused" ? "Resume" : "Pause"}</button></div>
       <div className="relative h-[52dvh] min-h-[310px] max-h-[560px] touch-none">
         <canvas ref={canvasRef} aria-label="Three-lane racing road. Use left and right arrow keys or touch controls." className="h-full w-full" />
         {(phase === "ready" || phase === "paused" || phase === "over") && <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60 p-4 text-center text-white backdrop-blur-sm"><div className="max-w-sm rounded-2xl border border-white/20 bg-slate-950/90 p-6 shadow-2xl"><p className="mb-2 text-xs font-extrabold uppercase tracking-[.2em] text-fuchsia-300">{phase === "over" ? "Race over" : phase === "paused" ? "Pit stop" : "Ready to race"}</p><h3 className="m-0 text-2xl font-black">{phase === "over" ? `${distance} m` : phase === "paused" ? "Race paused" : "Neon Drift"}</h3><p className="my-3 text-sm text-slate-300">{phase === "over" ? "Traffic caught up. Find a clear lane and try again." : "Steer between lanes to dodge oncoming traffic."}</p><button type="button" onClick={() => command(phase === "over" ? "restart" : phase === "paused" ? "pause" : "start")} className="min-h-11 rounded-xl bg-amber-300 px-6 py-2 font-extrabold text-slate-950">{phase === "over" ? "Race again" : phase === "paused" ? "Resume race" : "Start racing"}</button></div></div>}
       </div>
-      <div className="flex items-center justify-center gap-5 bg-slate-900 p-3 sm:hidden"><button type="button" aria-label="Steer left" onClick={() => command("left")} className="h-12 min-w-20 rounded-xl bg-white/10 text-2xl font-black text-white">←</button><button type="button" aria-label="Steer right" onClick={() => command("right")} className="h-12 min-w-20 rounded-xl bg-white/10 text-2xl font-black text-white">→</button><button type="button" aria-label="Restart" onClick={() => command("restart")} className="h-12 min-w-16 rounded-xl border border-white/20 text-sm font-bold text-white">↻</button></div>
+      <div className="flex items-center justify-center gap-5 bg-slate-900 px-3 pt-3 sm:hidden" style={{ paddingBottom: "calc(.75rem + env(safe-area-inset-bottom))" }}><button type="button" aria-label="Steer left" onClick={() => command("left")} className="h-12 min-w-20 rounded-xl bg-white/10 text-2xl font-black text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">←</button><button type="button" aria-label="Steer right" onClick={() => command("right")} className="h-12 min-w-20 rounded-xl bg-white/10 text-2xl font-black text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">→</button><button type="button" aria-label="Restart" onClick={() => command("restart")} className="h-12 min-w-16 rounded-xl border border-white/20 text-sm font-bold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">↻</button></div>
       <p className="m-0 px-4 pb-3 text-center text-xs text-slate-400">A/D or ←/→ to change lanes · P to pause · avoid the traffic</p>
     </section>
   );

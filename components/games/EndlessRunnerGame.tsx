@@ -2,12 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 
 type Thing = { lane: number; depth: number; kind: "barrier" | "orb" };
-type Runner = { lane: number; jump: number; distance: number; score: number; things: Thing[]; spawnAt: number; active: boolean; paused: boolean; over: boolean; time: number };
+type Runner = { lane: number; lanePosition: number; jump: number; distance: number; score: number; things: Thing[]; spawnAt: number; active: boolean; paused: boolean; over: boolean; time: number };
 type Command = "start" | "pause" | "restart" | "left" | "right" | "jump";
 
 export default function EndlessRunnerGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const runnerRef = useRef<Runner>({ lane: 1, jump: 0, distance: 0, score: 0, things: [], spawnAt: 0, active: false, paused: false, over: false, time: 0 });
+  const runnerRef = useRef<Runner>({ lane: 1, lanePosition: 1, jump: 0, distance: 0, score: 0, things: [], spawnAt: 0, active: false, paused: false, over: false, time: 0 });
   const commandRef = useRef<(command: Command) => void>(() => undefined);
   const [phase, setPhase] = useState<"ready" | "running" | "paused" | "over">("ready");
   const [score, setScore] = useState(0);
@@ -25,11 +25,12 @@ export default function EndlessRunnerGame() {
     const game = runnerRef.current;
     let raf = 0;
     let last = 0;
+    let lastRender = 0;
     let paintTime = 0;
     let pointerStart: { x: number; y: number } | null = null;
     const laneX = (lane: number, depth: number) => canvas.width * (0.5 + (lane - 1) * (0.16 + depth * 0.21));
     const reset = (begin: boolean) => {
-      Object.assign(game, { lane: 1, jump: 0, distance: 0, score: 0, things: [], spawnAt: 0.8, active: begin, paused: false, over: false, time: 0 });
+      Object.assign(game, { lane: 1, lanePosition: 1, jump: 0, distance: 0, score: 0, things: [], spawnAt: 0.8, active: begin, paused: false, over: false, time: 0 });
       setScore(0);
       setPhase(begin ? "running" : "ready");
     };
@@ -44,7 +45,7 @@ export default function EndlessRunnerGame() {
     commandRef.current = action;
     const resize = () => {
       const box = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.max(1, Math.round(box.width * dpr));
       canvas.height = Math.max(1, Math.round(box.height * dpr));
     };
@@ -63,6 +64,8 @@ export default function EndlessRunnerGame() {
       pointerStart = null;
     };
     const paint = (now: number) => {
+      if (now - lastRender < 32) { raf = requestAnimationFrame(paint); return; }
+      lastRender = now;
       const w = canvas.width; const h = canvas.height;
       const horizon = h * 0.25;
       const gradient = ctx.createLinearGradient(0, 0, 0, h);
@@ -80,6 +83,7 @@ export default function EndlessRunnerGame() {
         game.time += dt;
         const speed = 0.34 + Math.min(0.42, game.distance / 850);
         game.distance += dt * (95 + speed * 110);
+        game.lanePosition += (game.lane - game.lanePosition) * Math.min(1, dt * 11);
         if (game.jump > 0) game.jump = Math.max(0, game.jump - dt);
         game.spawnAt -= dt;
         if (game.spawnAt <= 0) {
@@ -116,7 +120,7 @@ export default function EndlessRunnerGame() {
           ctx.fillStyle = "#fecdd3"; ctx.fillRect(x - size * 0.7, y - size * 1.15, size * 0.4, size * 0.3);
         }
       }
-      const playerX = laneX(game.lane, 0.83);
+      const playerX = laneX(game.lanePosition, 0.83);
       const jumpHeight = game.jump > 0 ? Math.sin((1 - game.jump / 0.78) * Math.PI) * h * 0.12 : 0;
       const playerY = h * 0.87 - jumpHeight;
       ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.beginPath(); ctx.ellipse(playerX, h * 0.89, w * 0.045, h * 0.018, 0, 0, Math.PI * 2); ctx.fill();
@@ -151,17 +155,17 @@ export default function EndlessRunnerGame() {
     <section aria-label="Cloud Sprint game" className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-xl">
       <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-900 px-4 py-3 text-white">
         <p className="m-0 font-bold">Distance <span className="text-cyan-300">{score} m</span><span className="mx-3 text-slate-600">·</span>Best <span className="text-amber-300">{best} m</span></p>
-        <button type="button" onClick={() => command("pause")} className="rounded-lg border border-white/20 px-3 py-1.5 text-sm font-bold hover:bg-white/10">{phase === "paused" ? "Resume" : "Pause"}</button>
+        <button type="button" onClick={() => command("pause")} className="min-h-11 rounded-lg border border-white/20 px-3 py-1.5 text-sm font-bold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">{phase === "paused" ? "Resume" : "Pause"}</button>
       </div>
-      <div className="relative h-[52dvh] min-h-[310px] max-h-[560px] touch-none">
+      <div className="game-interaction relative h-[min(52dvh,560px)] min-h-[300px]">
         <canvas ref={canvasRef} aria-label="Three-lane runner track. Use arrow keys or touch controls." className="h-full w-full" />
         {(phase === "ready" || phase === "over" || phase === "paused") && <div className="absolute inset-0 flex items-center justify-center bg-slate-950/60 p-4 text-center text-white backdrop-blur-sm"><div className="max-w-sm rounded-2xl border border-white/20 bg-slate-950/90 p-6 shadow-2xl"><p className="mb-2 text-xs font-extrabold uppercase tracking-[.2em] text-cyan-300">{phase === "over" ? "Run complete" : phase === "paused" ? "Taking a breather?" : "Ready when you are"}</p><h3 className="m-0 text-2xl font-black">{phase === "over" ? `${score} m` : phase === "paused" ? "Game paused" : "Cloud Sprint"}</h3><p className="my-3 text-sm text-slate-300">{phase === "over" ? "Dodge the barriers and see if you can beat your best distance." : "Switch lanes, jump over barriers, and collect the glowing orbs."}</p><button type="button" onClick={() => command(phase === "over" ? "restart" : phase === "paused" ? "pause" : "start")} className="min-h-11 rounded-xl bg-amber-300 px-6 py-2 font-extrabold text-slate-950">{phase === "over" ? "Run again" : phase === "paused" ? "Resume run" : "Start running"}</button></div></div>}
       </div>
-      <div className="flex items-center justify-center gap-3 bg-slate-900 p-3 sm:hidden">
-        <button type="button" aria-label="Move left" onClick={() => command("left")} className="h-12 min-w-14 rounded-xl bg-white/10 text-xl font-black text-white">←</button>
-        <button type="button" aria-label="Jump" onClick={() => command("jump")} className="h-12 min-w-20 rounded-xl bg-cyan-500 font-extrabold text-slate-950">Jump</button>
-        <button type="button" aria-label="Move right" onClick={() => command("right")} className="h-12 min-w-14 rounded-xl bg-white/10 text-xl font-black text-white">→</button>
-        <button type="button" aria-label="Restart" onClick={() => command("restart")} className="h-12 min-w-14 rounded-xl border border-white/20 text-sm font-bold text-white">↻</button>
+      <div className="flex items-center justify-center gap-3 bg-slate-900 px-3 pt-3 sm:hidden" style={{ paddingBottom: "calc(.75rem + env(safe-area-inset-bottom))" }}>
+        <button type="button" aria-label="Move left" onClick={() => command("left")} className="h-12 min-w-14 rounded-xl bg-white/10 text-xl font-black text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">←</button>
+        <button type="button" aria-label="Jump" onClick={() => command("jump")} className="h-12 min-w-20 rounded-xl bg-cyan-500 font-extrabold text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">Jump</button>
+        <button type="button" aria-label="Move right" onClick={() => command("right")} className="h-12 min-w-14 rounded-xl bg-white/10 text-xl font-black text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">→</button>
+        <button type="button" aria-label="Restart" onClick={() => command("restart")} className="h-12 min-w-14 rounded-xl border border-white/20 text-sm font-bold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">↻</button>
       </div>
       <p className="m-0 px-4 pb-3 text-center text-xs text-slate-400">A/D or ←/→ to switch lanes · Space/↑ to jump · P to pause</p>
     </section>

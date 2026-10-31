@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.svg" },
   openGraph: { siteName: SITE_NAME, type: "website", title: SITE_NAME, description: "Original free browser games, made for desktop and mobile." },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0a2a5e" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#0a2a5e" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-dvh flex-col">
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-white focus:p-2">Skip to content</a>
         <SiteHeader />
-        <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</main>
+        <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-4 py-5 sm:py-8">{children}</main>
         <SiteFooter />
       </body>
     </html>

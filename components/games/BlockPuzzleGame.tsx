@@ -19,11 +19,12 @@ type Board = boolean[][];
 const emptyBoard = (): Board => Array.from({ length: 10 }, () => Array(10).fill(false) as boolean[]);
 const fits = (board: Board, shape: Shape, row: number, col: number) => shape.cells.every(([x, y]) => row + y < 10 && col + x < 10 && !board[row + y]?.[col + x]);
 const rollPieces = (): Piece[] => Array.from({ length: 3 }, (_, i) => ({ ...SHAPES[Math.floor(Math.random() * SHAPES.length)], id: Date.now() + i + Math.floor(Math.random() * 10000) }));
+const initialPieces = (): Piece[] => SHAPES.slice(0, 3).map((shape, id) => ({ ...shape, id }));
 const anyMove = (board: Board, pieces: Piece[]) => pieces.some((piece) => board.some((row, r) => row.some((_, c) => fits(board, piece, r, c))));
 
 export default function BlockPuzzleGame() {
   const [board, setBoard] = useState<Board>(emptyBoard);
-  const [pieces, setPieces] = useState<Piece[]>(rollPieces);
+  const [pieces, setPieces] = useState<Piece[]>(initialPieces);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
@@ -66,14 +67,14 @@ export default function BlockPuzzleGame() {
   }
 
   return (
-    <section aria-label="Block Bloom puzzle game" className="rounded-2xl border border-sky-100 bg-slate-950 p-4 text-white shadow-xl sm:p-6">
+    <section aria-label="Block Bloom puzzle game" className="-mx-2 rounded-2xl border border-sky-100 bg-slate-950 p-2 text-white shadow-xl sm:mx-0 sm:p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div><p className="m-0 text-xs font-extrabold uppercase tracking-[.2em] text-cyan-300">Block Bloom</p><p className="mb-0 mt-1 text-sm text-slate-300">Score <strong className="text-xl text-white">{score}</strong><span className="mx-3 text-slate-600">·</span>Best <strong className="text-amber-300">{best}</strong></p></div>
-        <button type="button" onClick={restart} className="min-h-10 rounded-xl border border-white/20 px-4 py-2 text-sm font-bold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">Restart</button>
+        <button type="button" onClick={restart} className="min-h-11 rounded-xl border border-white/20 px-4 py-2 text-sm font-bold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">Restart</button>
       </div>
       <p className="mb-4 min-h-10 text-sm text-slate-300" aria-live="polite">{over ? `No available shape fits. Final score: ${score}.` : message}</p>
-      <div className="mx-auto grid aspect-square w-full max-w-[500px] grid-cols-10 gap-1 rounded-xl bg-slate-800 p-2" role="grid" aria-label="10 by 10 block puzzle board">
-        {board.map((line, r) => line.map((filled, c) => <button key={`${r}-${c}`} type="button" role="gridcell" aria-label={`Row ${r + 1}, column ${c + 1}${filled ? ", filled" : ""}`} onClick={() => placeAt(r, c)} disabled={over} className={`aspect-square rounded-sm transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300 ${filled ? "bg-cyan-400 shadow-[inset_0_0_0_1px_rgba(255,255,255,.5)]" : "bg-slate-700 hover:bg-slate-600"}`} />))}</div>
+      <div className="game-interaction mx-auto grid aspect-square w-full max-w-[500px] grid-cols-10 gap-0.5 rounded-xl bg-slate-800 p-2 sm:gap-1" role="grid" aria-label="10 by 10 block puzzle board">
+        {board.map((line, r) => line.map((filled, c) => <button key={`${r}-${c}`} type="button" role="gridcell" aria-label={`Row ${r + 1}, column ${c + 1}${filled ? ", filled" : ""}`} onClick={() => placeAt(r, c)} disabled={over} className={`aspect-square rounded-sm touch-manipulation transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300 ${filled ? "bg-cyan-400 shadow-[inset_0_0_0_1px_rgba(255,255,255,.5)]" : "bg-slate-700 hover:bg-slate-600"}`} />))}</div>
       <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-4">
         {pieces.map((piece, index) => <button key={piece.id} type="button" aria-label={`Select ${piece.name} shape`} aria-pressed={selected === index} onClick={() => { setSelected(index); setMessage(`${piece.name} selected. Choose the top-left board cell for this shape.`); }} className={`flex min-h-24 flex-col items-center justify-center rounded-xl border p-2 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-300 ${selected === index ? "border-amber-300 bg-amber-300/10" : "border-white/15 bg-white/5 hover:bg-white/10"}`}>
           <span className="mb-1 text-[11px] font-bold text-slate-300">{piece.name}</span>
