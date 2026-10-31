@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CONTACT_EMAIL, LAST_UPDATED, OWNER_NAME, SITE_NAME } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Sky Ball handles local storage, cookies, advertising and data collection.",
+  description: "How MT Games handles local game progress, browser storage, advertising, and data collection.",
   alternates: { canonical: "/privacy" },
 };
 export default function Privacy() {
@@ -11,15 +11,15 @@ export default function Privacy() {
     <div className="prose-page">
       <h1>Privacy Policy</h1>
       <p>Last updated: {LAST_UPDATED}</p>
-      <p>{SITE_NAME} is published by {OWNER_NAME}. This policy explains what the website and game do with information.</p>
+      <p>{SITE_NAME} is published by {OWNER_NAME}. This policy explains what this website and its games do with information.</p>
       <h2>Summary</h2>
       <p>This site does not require an account to play. The game stores progress on your device, and the site may use third-party advertising and hosting services to deliver content securely.</p>
       <h2>Data stored on your device</h2>
-      <p>The game uses your browser&apos;s local storage (one item named <code>sb</code>) to remember your unlocked levels, best times, mute setting and whether you have seen the tutorial. This data stays on your device and is not sent to us. You can remove it by clearing this site&apos;s data in your browser.</p>
+      <p>Sky Ball uses the local-storage item <code>sb</code> to remember unlocked levels, best times, mute settings, and tutorial state. The arcade and racing games use separate local-storage items for best scores. This data stays in your browser on your device and is not sent to us. You can remove it by clearing this site&apos;s data in your browser.</p>
       <h2>Cookies</h2>
       <p>The site does not set its own tracking cookies for gameplay. Our hosting provider may use technical cookies or logs needed to deliver the site, and Google AdSense may use cookies or similar technologies when ads are served or measured.</p>
       <h2>Data collection</h2>
-      <p>{OWNER_NAME} does not intentionally collect personal data through the game itself. Like most websites, the hosting provider (Vercel) processes standard server logs such as IP address, browser type and requested pages to serve and protect the site. The game&apos;s 3D library is served from this site, not from a third party.</p>
+      <p>{OWNER_NAME} does not intentionally collect personal data through gameplay. Like most websites, the hosting provider (Vercel) processes standard server logs such as IP address, browser type, and requested pages to serve and protect the site. Sky Ball&apos;s 3D library is served from this site, not from a third party.</p>
       <h2>Contact form</h2>
       <p>The contact form only opens a message in your own email app. We receive the message, and your email address, only if you choose to send it. We use it to reply to you.</p>
       <h2>Advertising</h2>

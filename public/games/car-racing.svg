@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img">
+  <defs><linearGradient id="roadbg" x2="0" y2="1"><stop stop-color="#120b34"/><stop offset="1" stop-color="#312e81"/></linearGradient></defs>
+  <path fill="url(#roadbg)" d="M0 0h960v540H0z"/><circle cx="770" cy="95" r="54" fill="#f0abfc" opacity=".9"/><path fill="#0f172a" stroke="#22d3ee" stroke-width="5" d="m240 540 170-420h140l170 420z"/><path stroke="#c4b5fd" stroke-width="9" stroke-dasharray="40 30" d="m407 540 74-420m89 420-42-420"/><path fill="#fb7185" stroke="#fff" stroke-width="7" d="m419 427 22-57h74l25 57-7 58h-108z"/><path fill="#fda4af" d="m445 376 12-26h42l13 26z"/><path fill="#67e8f9" stroke="#fff" stroke-width="6" d="m488 253 15-38h46l18 38-5 41h-70z"/><path fill="#a5f3fc" d="m512 216 9-18h25l10 18z"/><path stroke="#f0abfc" stroke-width="5" d="M95 250h100m570 90h100"/>
+</svg>

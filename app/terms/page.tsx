@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LAST_UPDATED, OWNER_NAME, SITE_NAME } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Terms of Use",
-  description: "Terms for using the Sky Ball website and game.",
+  description: "Terms for using the MT Games website and browser games.",
   alternates: { canonical: "/terms" },
 };
 export default function Terms() {
@@ -11,9 +11,9 @@ export default function Terms() {
     <div className="prose-page">
       <h1>Terms of Use</h1>
       <p>Last updated: {LAST_UPDATED}</p>
-      <p>{SITE_NAME} is published by {OWNER_NAME}. By using this website and game you agree to these terms. See also our <Link href="/privacy">Privacy Policy</Link>.</p>
+      <p>{SITE_NAME} is published by {OWNER_NAME}. By using this website and its games you agree to these terms. See also our <Link href="/privacy">Privacy Policy</Link>.</p>
       <h2>Personal use</h2>
-      <p>The game is free to play for personal, non-commercial entertainment. You may link to this site and use the game in a browser without creating an account or paying a fee.</p>
+      <p>The games are free to play for personal, non-commercial entertainment. You may link to this site and play in a browser without creating an account or paying a fee.</p>
       <h2>Fair use</h2>
       <ul>
         <li>Do not attempt to disrupt the site, overload it, or access it by automated means that harm others.</li>
