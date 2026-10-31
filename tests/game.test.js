@@ -27,6 +27,10 @@ const botSrc=`(function(){
   return{done:state==='done',time:t,stars:got,total:stars.length,falls,steps,end:[p.x,p.y,p.z].map(n=>n.toFixed(1)).join(','),zs:boxes.filter(b=>b.rot||b.mv).map(b=>(b.rot?'BAR':'MV')+Math.round(b.z)).join(' ')}}})()`;
 const G=makeCtx();const bot=G.run(botSrc);
 const res=[];for(let i=0;i<40;i++){const r=bot(i);res.push(r);ok(r.done,`Level ${i+1} completed by bot: ${r.time.toFixed(1)}s, stars ${r.stars}/${r.total}, respawns ${r.falls}${r.done?'':' END@'+r.end+' '+r.zs}`)}
+const levelMetadata=fs.readFileSync('lib/levels.ts','utf8');
+const listedStars=[...levelMetadata.matchAll(/\["[^"]+",\s*"[^"]+",\s*(\d+)\]/g)].map((match)=>Number(match[1]));
+ok(listedStars.length===40,'Level guide includes star totals for all 40 courses');
+if(listedStars.length===40)for(let i=0;i<40;i++)ok(listedStars[i]===res[i].total,`Level ${i+1} guide star total matches the playable course`);
 // --- Unlocking + saved progress
 ok(G.run('save.unlocked')===40,'All levels unlocked after sequential completion (unlocked='+G.run('save.unlocked')+')');
 const saved=JSON.parse(G.store.sb);ok(saved.unlocked===40&&Object.keys(saved.best).length===40&&Object.keys(saved.completed).length===40,'Progress, completion & best times written to localStorage');

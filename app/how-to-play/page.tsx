@@ -43,7 +43,7 @@ export default function HowToPlay() {
         <li><b>Progress missing:</b> progress lives in your browser storage. It is cleared if you clear site data or use private browsing.</li>
         <li><b>Choppy performance:</b> close other tabs and use a recent browser. Lower-powered devices automatically use lighter graphics settings.</li>
       </ul>
-      <p><Link href="/play">Ready? Play now.</Link></p>
+      <p><Link href="/games/sky-ball">Ready? Play Sky Ball now.</Link></p>
     </div>
   );
 }

@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TIPS } from "@/lib/tips";
 export const metadata: Metadata = {
-  title: "Tips & Guides",
-  description: "Gameplay guides for Sky Ball: steady controls, moving platforms, rotating bars, narrow bridges, checkpoints and stars.",
+  title: "Sky Ball Tips and Strategies",
+  description: "Practical Sky Ball strategies for momentum, moving platforms, rotating bars, narrow bridges, checkpoints, stars, and faster replays.",
   alternates: { canonical: "/tips" },
 };
 export default function TipsPage() {
   return (
     <div className="prose-page">
-      <h1>Tips &amp; Guides</h1>
-      <p>These are the patterns that show up most often in the 40-level run: bridges, moving platforms, rotating bars, and checkpoint-heavy sections. Jump to: {TIPS.map((t, i) => (<span key={t.slug}>{i > 0 && " · "}<a href={`#${t.slug}`}>{t.title}</a></span>))}</p>
+      <h1>Sky Ball tips and strategies</h1>
+      <p>These notes focus on decisions you can practice across Sky Ball&apos;s 40 courses: managing momentum, timing a moving platform, and recovering safely after a fall. They complement the <Link href="/guides#sky-ball">step-by-step Sky Ball guide</Link>. Jump to: {TIPS.map((t, i) => (<span key={t.slug}>{i > 0 && " · "}<a href={`#${t.slug}`}>{t.title}</a></span>))}</p>
       <h2>Start with a stable line</h2>
       <p>Most mistakes happen because the ball enters a narrow section at an angle and then tries to correct too late. If the route ahead is twisty, line up before the platform edge and keep the ball near the center of the safe surface. A steady path will beat a frantic last-second turn in almost every level.</p>
       <h2>Use checkpoints as recovery points</h2>

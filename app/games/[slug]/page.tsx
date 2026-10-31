@@ -55,7 +55,10 @@ export default function GameDetailsPage({ params }: { params: { slug: string } }
       <section className="mt-8 rounded-2xl border border-sky-100 bg-white p-5 shadow-sm">
         <h2 className="mt-0">Objective</h2><p>{game.objective}</p>
         <h2>Controls</h2><ul>{game.controls.map((control) => <li key={control}>{control}</li>)}</ul>
-        <h2>Tips and strategy</h2><ul>{game.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul>
+        <h2>Beginner instructions</h2><ol className="list-decimal space-y-1 pl-5">{game.guide.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+        <h2>Advanced strategies</h2><ul>{game.guide.advanced.map((tip) => <li key={tip}>{tip}</li>)}</ul>
+        <h2>Game-specific tips</h2><ul>{game.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul>
+        <h2>Common problems and solutions</h2><ul>{game.guide.mistakes.map((mistake) => <li key={mistake}>{mistake}</li>)}</ul>
         {game.slug === "sky-ball" && <p className="mb-0"><Link href="/levels">Level overviews for all 40 courses</Link> · <Link href="/how-to-play">Full controls and troubleshooting</Link> · <Link href="/tips">More Sky Ball strategies</Link></p>}
       </section>
       <section className="mt-8">

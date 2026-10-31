@@ -27,7 +27,7 @@ export default function GuidesPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <section><h3 className="mt-5 text-lg font-bold text-slate-950">Strategies to try</h3><ul>{game.guide.advanced.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>
-              <section><h3 className="mt-5 text-lg font-bold text-slate-950">Common mistakes</h3><ul>{game.guide.mistakes.map((mistake) => <li key={mistake}>{mistake}</li>)}</ul></section>
+              <section><h3 className="mt-5 text-lg font-bold text-slate-950">Common problems and solutions</h3><ul>{game.guide.mistakes.map((mistake) => <li key={mistake}>{mistake}</li>)}</ul></section>
             </div>
             <h3 className="mt-5 text-lg font-bold text-slate-950">Quick tips</h3>
             <ul>{game.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul>

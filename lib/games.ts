@@ -31,7 +31,7 @@ export const GAMES: Game[] = [
     guide: {
       steps: ["Choose an unlocked course and start from its opening platform.", "Build a little speed on broad ground, then center the ball before a bridge.", "Pause your steering on moving platforms until you can read their direction.", "Touch checkpoints to make the next recovery safer, then roll onto the green finish pad."],
       advanced: ["Use short taps instead of holding a direction near edges; momentum continues after releasing the control.", "On rotating-bar sections, watch a complete sweep before crossing and aim for the widest opening.", "Stars are optional. Secure a difficult finish first, then replay an unlocked course for its collectibles and best time."],
-      mistakes: ["Over-correcting on narrow bridges adds sideways momentum.", "Jumping into a moving platform before it arrives can leave no safe landing.", "A checkpoint only helps after you touch its glowing marker."],
+      mistakes: ["If the ball drifts toward an edge, release the direction and use short corrections; momentum continues after you let go.", "If a moving platform is out of reach, wait for it to line up with the landing surface before rolling onto it.", "If a fall sends you back to the start, touch the glowing checkpoint marker before attempting the next hazard."],
     },
     faqs: [
       { question: "How many levels are in Sky Ball?", answer: "Sky Ball has 40 levels. Finishing a level unlocks the next one." },
@@ -56,7 +56,7 @@ export const GAMES: Game[] = [
     guide: {
       steps: ["Start a run when the track is clear.", "Watch the near edge of the road to judge when an object reaches your lane.", "Change lanes to avoid a barrier, or jump over one when the timing is safe.", "Collect gold orbs for bonus points and keep moving as the pace climbs."],
       advanced: ["Move one lane at a time; a late double lane change can put you into a second obstacle.", "Save jumps for barriers that cannot be avoided with a safe lane change.", "An orb is a bonus, not a reason to run into a barrier. Choose a safe route first."],
-      mistakes: ["Jumping too early can leave you back on the ground at the barrier.", "Swiping repeatedly can queue lane changes you did not intend.", "The fastest-looking lane is not always the safest; track the next obstacle too."],
+      mistakes: ["If a jump ends before a barrier, wait until it is closer before jumping; a jump cannot be held indefinitely.", "If you overshoot a lane with a swipe, use one deliberate swipe at a time and wait for the next obstacle before steering again.", "If the lane ahead looks clear but the next obstacle blocks it, scan farther down the track before committing."],
     },
     faqs: [
       { question: "Does the runner have an ending?", answer: "No. It is an endless game; the run ends when you hit an obstacle." },
@@ -80,7 +80,7 @@ export const GAMES: Game[] = [
     guide: {
       steps: ["Read the level's score target above the board.", "Tap one gem and then an adjacent gem; a legal swap must make a line of at least three.", "Matched gems disappear, the gems above fall, and new gems enter from the top.", "Keep matching until the goal is reached; each valid swap uses one move."],
       advanced: ["Check both the horizontal and vertical lines created by a swap before choosing it.", "Clearing lower rows gives more pieces room to fall and can produce a chain reaction.", "A four- or five-gem match scores more than a simple three, so scan the whole board before committing."],
-      mistakes: ["Non-adjacent gems cannot be swapped.", "A swap that creates no match is returned and does not spend a move.", "When only a few moves remain, prioritize the score goal rather than making a visually pleasing match."],
+      mistakes: ["If two gems will not swap, select one directly adjacent to it; diagonal and longer-distance swaps are not supported.", "If a swap makes no line of three, the board returns to its previous state and the move is not used; look for a different neighbor.", "If only a few moves remain, compare each legal match against the score still needed and choose the one most likely to trigger a cascade."],
     },
     faqs: [
       { question: "How do I swap two gems?", answer: "Select one gem and then select an adjacent gem above, below, left, or right. Diagonal swaps are not allowed." },
@@ -104,7 +104,7 @@ export const GAMES: Game[] = [
     guide: {
       steps: ["Start with the center lane and scan the road ahead.", "Move left or right before a traffic car reaches your row.", "Keep to the lane with the clearest path and continue as speed rises.", "Pause for a break; restart when you are ready for a fresh run."],
       advanced: ["Plan your next lane change based on both the approaching car and the traffic behind it.", "Avoid rapid back-and-forth steering; the car takes a moment to settle into each lane.", "A safe, steady route earns more distance than a last-second dodge."],
-      mistakes: ["Waiting until a vehicle is at the bottom of the screen leaves too little time to move.", "Repeated lane commands can lead into a car that was not previously in your lane.", "The player car moves smoothly between lanes, so a lane change is not instantaneous."],
+      mistakes: ["If traffic is already close, move as soon as a safe lane opens instead of waiting for the car to reach the bottom of the road.", "If a second steering input takes you into traffic, make one lane change and check the next approaching car before changing again.", "If a lane change seems delayed, allow the car to finish moving between lanes before issuing another command."],
     },
     faqs: [
       { question: "Is racing against other players?", answer: "No. This is a single-player arcade driving game." },

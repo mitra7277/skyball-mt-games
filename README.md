@@ -10,7 +10,7 @@ MT Games is a Next.js 14 + TypeScript browser-game site with four original games
 The 3D games use the locally bundled Three.js asset in `public/game/three.min.js`; gameplay does not load a third-party game engine. Shared game settings, per-game tutorials, progress-based achievements, original guides, and game-specific FAQs are included.
 
 ## Pages
-Home `/`, game library `/games`, game pages `/games/[slug]`, guides `/guides`, awards `/awards`, FAQ `/faq`, plus How to Play, Levels, Tips, About, Contact, Privacy, Terms, custom 404, `sitemap.xml`, and `robots.txt`. `/play` remains available as the original Sky Ball route.
+Home `/`, game library `/games`, game pages `/games/[slug]`, guides `/guides`, awards `/awards`, FAQ `/faq`, plus How to Play, Levels, Tips, About, Contact, Privacy, Terms, custom 404, `sitemap.xml`, and `robots.txt`. The legacy `/play` route redirects to `/games/sky-ball` and preserves a selected `?level=` value.
 
 ## Requirements
 Node.js 18.18 or newer and npm.

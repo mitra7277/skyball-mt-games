@@ -10,6 +10,17 @@ type Achievement = {
   target: number;
 };
 
+const ACHIEVEMENTS: Omit<Achievement, "progress">[] = [
+  { id: "skyball-first-finish", game: "Sky Ball", title: "First Landing", description: "Complete your first Sky Ball course.", target: 1 },
+  { id: "skyball-ten-courses", game: "Sky Ball", title: "Cloud Explorer", description: "Complete ten different courses. Progress is based on saved course completions.", target: 10 },
+  { id: "skyball-all-courses", game: "Sky Ball", title: "Above the Clouds", description: "Complete all 40 courses in the original Sky Ball campaign.", target: 40 },
+  { id: "runner-long-haul", game: "Cloud Sprint", title: "Long Haul", description: "Set a personal best of at least 1,000 metres in a single run.", target: 1000 },
+  { id: "runner-orb-collector", game: "Cloud Sprint", title: "Orb Collector", description: "Collect 25 gold orbs across your runs.", target: 25 },
+  { id: "racing-distance", game: "Neon Drift", title: "Open Road", description: "Reach a personal best of 500 metres in a single run.", target: 500 },
+  { id: "prism-first-level", game: "Prism Pop", title: "First Bloom", description: "Clear the first match-three level and unlock the next one.", target: 1 },
+  { id: "prism-high-score", game: "Prism Pop", title: "Cascade Chaser", description: "Set a match-three best score of 2,000 points or more.", target: 2000 },
+];
+
 function readCount(key: string): number {
   try {
     const value = Number(localStorage.getItem(key));
@@ -37,20 +48,24 @@ function loadAchievements(): Achievement[] {
   } catch (error) {
     console.warn("Could not read Prism Pop achievements.", error);
   }
-  return [
-    { id: "skyball-first-finish", game: "Sky Ball", title: "First Landing", description: "Complete your first Sky Ball course.", progress: Math.min(skyball, 1), target: 1 },
-    { id: "skyball-ten-courses", game: "Sky Ball", title: "Cloud Explorer", description: "Complete ten different courses. Progress is based on saved course completions.", progress: Math.min(skyball, 10), target: 10 },
-    { id: "skyball-all-courses", game: "Sky Ball", title: "Above the Clouds", description: "Complete all 40 courses in the original Sky Ball campaign.", progress: Math.min(skyball, 40), target: 40 },
-    { id: "runner-long-haul", game: "Cloud Sprint", title: "Long Haul", description: "Set a personal best of at least 1,000 metres in a single run.", progress: Math.min(readCount("mt-runner-best"), 1000), target: 1000 },
-    { id: "runner-orb-collector", game: "Cloud Sprint", title: "Orb Collector", description: "Collect 25 gold orbs across your runs.", progress: Math.min(readCount("mt-runner-orbs"), 25), target: 25 },
-    { id: "racing-distance", game: "Neon Drift", title: "Open Road", description: "Reach a personal best of 500 metres in a single run.", progress: Math.min(readCount("mt-racing-best"), 500), target: 500 },
-    { id: "prism-first-level", game: "Prism Pop", title: "First Bloom", description: "Clear the first match-three level and unlock the next one.", progress: Math.min(puzzleLevel - 1, 1), target: 1 },
-    { id: "prism-high-score", game: "Prism Pop", title: "Cascade Chaser", description: "Set a match-three best score of 2,000 points or more.", progress: Math.min(puzzleBest, 2000), target: 2000 },
-  ];
+  const progressById: Record<string, number> = {
+    "skyball-first-finish": skyball,
+    "skyball-ten-courses": skyball,
+    "skyball-all-courses": skyball,
+    "runner-long-haul": readCount("mt-runner-best"),
+    "runner-orb-collector": readCount("mt-runner-orbs"),
+    "racing-distance": readCount("mt-racing-best"),
+    "prism-first-level": puzzleLevel - 1,
+    "prism-high-score": puzzleBest,
+  };
+  return ACHIEVEMENTS.map((achievement) => ({
+    ...achievement,
+    progress: Math.min(progressById[achievement.id] || 0, achievement.target),
+  }));
 }
 
 export default function AwardsBoard() {
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>(() => ACHIEVEMENTS.map((achievement) => ({ ...achievement, progress: 0 })));
   const [unlocked, setUnlocked] = useState<string[]>([]);
   const [newUnlocks, setNewUnlocks] = useState<string[]>([]);
 
@@ -72,7 +87,6 @@ export default function AwardsBoard() {
     catch (error) { console.warn("Could not save achievement unlocks.", error); }
   }, []);
 
-  if (!achievements.length) return <p role="status">Loading your saved achievements…</p>;
   const earnedCount = achievements.filter((achievement) => unlocked.includes(achievement.id)).length;
   return (
     <div>

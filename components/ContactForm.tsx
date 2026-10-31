@@ -18,7 +18,7 @@ export default function ContactForm({ to }: { to: string }) {
     if (message.length < 10 || message.length > 1500) err.message = "Message must be 10–1500 characters.";
     setErrors(err);
     if (Object.keys(err).length) return;
-    const subject = encodeURIComponent(`Sky Ball message from ${name}`);
+    const subject = encodeURIComponent(`MT Games message from ${name}`);
     const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
     window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
     setDone(true);
@@ -29,7 +29,7 @@ export default function ContactForm({ to }: { to: string }) {
       {(["name", "email"] as const).map((k) => (
         <div key={k}>
           <label htmlFor={k} className="mb-1 block font-semibold capitalize">{k}</label>
-          <input id={k} name={k} type={k === "email" ? "email" : "text"} maxLength={120} className={field} aria-invalid={!!errors[k]} aria-describedby={errors[k] ? `${k}-e` : undefined} />
+          <input id={k} name={k} type={k === "email" ? "email" : "text"} maxLength={k === "name" ? 80 : 120} className={field} aria-invalid={!!errors[k]} aria-describedby={errors[k] ? `${k}-e` : undefined} />
           {errors[k] && <p id={`${k}-e`} role="alert" className="mt-1 text-sm text-red-700">{errors[k]}</p>}
         </div>
       ))}
