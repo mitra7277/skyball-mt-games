@@ -114,7 +114,7 @@ export default function PrivacyConsent() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="privacy-settings-title"
-            className="w-full max-w-xl rounded-2xl bg-white p-5 shadow-2xl sm:p-7"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-xl overflow-y-auto overscroll-contain rounded-2xl bg-white p-5 shadow-2xl sm:p-7"
           >
             <h2 id="privacy-settings-title" className="text-xl font-extrabold text-sky-deep sm:text-2xl">
               Privacy Settings

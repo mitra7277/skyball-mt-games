@@ -31,6 +31,7 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
  ok(!home.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'AdSense script waits for optional advertising choice');
  const consentSource=require('fs').readFileSync('components/PrivacyConsent.tsx','utf8');
  ok(consentSource.includes('ca-pub-4221940206853514')&&consentSource.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'Existing AdSense script URL and publisher ID are preserved');
+ ok(consentSource.includes('max-h-[calc(100dvh-2rem)]')&&consentSource.includes('overflow-y-auto'),'Privacy preferences dialog fits short viewports and can scroll');
  ok(home.includes('Privacy Settings'),'Footer includes a persistent Privacy Settings control');
  for(const a of ['/game/skyball.html','/game/cloud-sprint.html','/game/neon-drift.html','/game/three.min.js','/games/prism-pop.svg','/favicon.svg']){const r=await fetch(base+a);ok(r.status===200,`asset ${a} -> ${r.status}`)}
  const g=await (await fetch(base+'/game/skyball.html')).text();ok(!/https?:\/\//.test(g.replace(/<[^>]*xmlns[^>]*>/g,'')),'Game page makes no external requests');
