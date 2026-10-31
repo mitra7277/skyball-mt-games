@@ -18,7 +18,7 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
   ok(!!description&&!descriptions.has(description),`${p} has a unique meta description`);descriptions.add(description);
   if(p.startsWith('/games/'))for(const section of ['Beginner instructions','Advanced strategies','Game-specific tips','Common problems and solutions','Frequently asked questions'])ok(h.includes(section),`${p} includes ${section.toLowerCase()}`);
   if(p==='/awards')ok(h.includes('First Landing')&&h.includes('Cascade Chaser')&&!h.includes('Loading your saved achievements'),`${p} includes server-rendered achievement details`);
-  if(p==='/privacy')ok(h.includes('adssettings.google.com')&&h.includes('does not currently show an on-site advertising consent dialog'),`${p} discloses ad personalization controls and current consent state`);
+  if(p==='/privacy')ok(h.includes('adssettings.google.com')&&h.includes('The preference is stored only in this browser')&&h.includes('Privacy Settings link in the footer'),`${p} describes current advertising preferences accurately`);
   const tt=(h.match(/<title>([^<]*)<\/title>/)||[])[1];ok(!titles.has(tt),`${p} has a unique title`);titles.add(tt);
   for(const m of h.matchAll(/href="(\/[^"#?]*)/g))links.add(m[1])}
  for(const l of links){if(l.startsWith('/_next')||l.startsWith('/favicon'))continue;const r=await fetch(base+l);ok(r.status===200,`link ${l} -> ${r.status}`)}
@@ -26,7 +26,12 @@ const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fails++};
  const sm=await (await fetch(base+'/sitemap.xml')).text();ok(pages.every(p=>sm.includes('<loc>')&&sm.includes(p==='/'?'<loc>'+expectedUrl+'</loc>':`<loc>${expectedUrl}${p}</loc>`)),'sitemap.xml lists all MT Games pages');
  const rb=await (await fetch(base+'/robots.txt')).text();ok(/User-Agent: \*/i.test(rb)&&/Sitemap: /.test(rb),'robots.txt valid');
  const ads=await (await fetch(base+'/ads.txt')).text();ok(ads.trim()==='google.com, pub-4221940206853514, DIRECT, f08c47fec0942fa0','ads.txt has the preserved AdSense publisher entry');
- const home=await (await fetch(base+'/')).text();ok(home.includes('ca-pub-4221940206853514')&&home.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'AdSense verification script and publisher ID are present');
+ const home=await (await fetch(base+'/')).text();
+ ok(home.includes('Reject Optional')&&home.includes('Manage Preferences')&&home.includes('essential game storage'),'Privacy choices are server-rendered');
+ ok(!home.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'AdSense script waits for optional advertising choice');
+ const consentSource=require('fs').readFileSync('components/PrivacyConsent.tsx','utf8');
+ ok(consentSource.includes('ca-pub-4221940206853514')&&consentSource.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'Existing AdSense script URL and publisher ID are preserved');
+ ok(home.includes('Privacy Settings'),'Footer includes a persistent Privacy Settings control');
  for(const a of ['/game/skyball.html','/game/cloud-sprint.html','/game/neon-drift.html','/game/three.min.js','/games/prism-pop.svg','/favicon.svg']){const r=await fetch(base+a);ok(r.status===200,`asset ${a} -> ${r.status}`)}
  const g=await (await fetch(base+'/game/skyball.html')).text();ok(!/https?:\/\//.test(g.replace(/<[^>]*xmlns[^>]*>/g,'')),'Game page makes no external requests');
  for(const [path,title] of [['/game/cloud-sprint.html','Cloud Sprint'],['/game/neon-drift.html','Neon Drift']]){

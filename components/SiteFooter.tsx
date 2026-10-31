@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PrivacySettingsLink from "@/components/PrivacySettingsLink";
 import { BRAND_LINE, NAV, OWNER_NAME } from "@/lib/site";
 export default function SiteFooter() {
   return (
@@ -11,6 +12,7 @@ export default function SiteFooter() {
           ))}
           <Link href="/privacy" className="py-1 hover:underline">Privacy Policy</Link>
           <Link href="/terms" className="py-1 hover:underline">Terms of Use</Link>
+          <PrivacySettingsLink />
         </nav>
         <p className="mt-4 text-xs text-sky-200">© {new Date().getFullYear()} {OWNER_NAME}. Original browser games, free to play.</p>
       </div>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import PrivacyConsent from "@/components/PrivacyConsent";
 import { OWNER_NAME, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -20,18 +21,12 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, view
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4221940206853514"
-          crossOrigin="anonymous"
-        />
-      </head>
       <body className="flex min-h-dvh flex-col">
         <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-white focus:p-2">Skip to content</a>
         <SiteHeader />
         <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-4 py-5 sm:py-8">{children}</main>
         <SiteFooter />
+        <PrivacyConsent />
       </body>
     </html>
   );
