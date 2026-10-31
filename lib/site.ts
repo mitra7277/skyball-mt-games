@@ -13,8 +13,9 @@ export const NAV = [
   { href: "/", label: "Home" },
   { href: "/games", label: "Games" },
   { href: "/guides", label: "Guides" },
+  { href: "/awards", label: "Awards" },
   { href: "/faq", label: "FAQ" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
-export const PAGES = ["/", "/games", "/games/sky-ball", "/games/endless-runner", "/games/block-puzzle", "/games/car-racing", "/guides", "/faq", "/how-to-play", "/levels", "/tips", "/about", "/contact", "/privacy", "/terms"];
+export const PAGES = ["/", "/games", "/games/sky-ball", "/games/endless-runner", "/games/block-puzzle", "/games/car-racing", "/guides", "/awards", "/faq", "/how-to-play", "/levels", "/tips", "/about", "/contact", "/privacy", "/terms"];

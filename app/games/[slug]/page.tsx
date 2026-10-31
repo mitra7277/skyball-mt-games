@@ -4,10 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import GameFrame from "@/components/GameFrame";
+import GameExperience from "@/components/GameExperience";
 import { GAMES, getGame } from "@/lib/games";
 
 const EndlessRunnerGame = dynamic(() => import("@/components/games/EndlessRunnerGame"), { loading: () => <p role="status">Loading Cloud Sprint…</p> });
-const BlockPuzzleGame = dynamic(() => import("@/components/games/BlockPuzzleGame"), { loading: () => <p role="status">Loading Block Bloom…</p> });
+const BlockPuzzleGame = dynamic(() => import("@/components/games/BlockPuzzleGame"), { loading: () => <p role="status">Loading Prism Pop…</p> });
 const CarRacingGame = dynamic(() => import("@/components/games/CarRacingGame"), { loading: () => <p role="status">Loading Neon Drift…</p> });
 
 export function generateStaticParams() {
@@ -47,7 +48,9 @@ export default function GameDetailsPage({ params }: { params: { slug: string } }
       <a href="#play" className="btn !no-underline">Play now <span aria-hidden="true">↓</span></a>
       <section id="play" className="mt-8 scroll-mt-24">
         <h2 className="mb-3 mt-0">Play {game.shortTitle}</h2>
-        <PlaySurface slug={game.slug} />
+        <GameExperience slug={game.slug} title={game.shortTitle} objective={game.objective} controls={game.controls}>
+          <PlaySurface slug={game.slug} />
+        </GameExperience>
       </section>
       <section className="mt-8 rounded-2xl border border-sky-100 bg-white p-5 shadow-sm">
         <h2 className="mt-0">Objective</h2><p>{game.objective}</p>

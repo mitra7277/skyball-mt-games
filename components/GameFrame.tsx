@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function GameFrame() {
@@ -9,6 +9,28 @@ export default function GameFrame() {
   const ref = useRef<HTMLIFrameElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [fullscreenMessage, setFullscreenMessage] = useState("");
+  useEffect(() => {
+    const forwardEvent = (event: Event) => {
+      const { command } = (event as CustomEvent<{ command: string }>).detail || {};
+      ref.current?.contentWindow?.postMessage({ type: "mt-game-command", command }, window.location.origin);
+    };
+    const forwardPreferences = (event: Event) => {
+      ref.current?.contentWindow?.postMessage({ type: "mt-game-preferences", preferences: (event as CustomEvent).detail }, window.location.origin);
+    };
+    const receiveGameEvent = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || !event.data) return;
+      if (event.data.type === "mt-game-phase") window.dispatchEvent(new CustomEvent("mt-game-phase", { detail: event.data.detail }));
+      if (event.data.type === "mt-game-interaction") window.dispatchEvent(new CustomEvent("mt-game-interaction"));
+    };
+    window.addEventListener("mt-game-command", forwardEvent);
+    window.addEventListener("mt-game-preferences", forwardPreferences);
+    window.addEventListener("message", receiveGameEvent);
+    return () => {
+      window.removeEventListener("mt-game-command", forwardEvent);
+      window.removeEventListener("mt-game-preferences", forwardPreferences);
+      window.removeEventListener("message", receiveGameEvent);
+    };
+  }, []);
   return (
     <div>
       <div className="game-interaction relative h-[min(68dvh,720px)] min-h-[360px] overflow-hidden rounded-2xl bg-sky-300 shadow-[0_24px_70px_-24px_rgba(10,42,94,.55)] ring-1 ring-sky-900/10 sm:h-[76dvh] sm:min-h-[440px]">
@@ -24,7 +46,16 @@ export default function GameFrame() {
           loading="lazy"
           allowFullScreen
           className="h-full w-full border-0"
-          onLoad={() => { setLoaded(true); ref.current?.contentWindow?.focus(); }}
+          onLoad={() => {
+            setLoaded(true);
+            try {
+              const preferences = localStorage.getItem("mt-game-settings");
+              if (preferences) ref.current?.contentWindow?.postMessage({ type: "mt-game-preferences", preferences: JSON.parse(preferences) }, window.location.origin);
+            } catch (error) {
+              console.warn("Could not send game settings to Sky Ball.", error);
+            }
+            ref.current?.contentWindow?.focus();
+          }}
         />
       </div>
       <div className="mt-2 flex justify-end">

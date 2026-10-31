@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Prism Pop</title>
+  <desc id="desc">Original jewel shapes glow against a deep violet game board.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#111936"/><stop offset="1" stop-color="#40246f"/></linearGradient>
+    <linearGradient id="jewel" x2=".8" y2="1"><stop stop-color="#fff" stop-opacity=".85"/><stop offset=".35" stop-color="#fb7185"/><stop offset="1" stop-color="#be185d"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="9" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="960" height="540" rx="32" fill="url(#bg)"/>
+  <g opacity=".18" fill="#c4b5fd"><circle cx="87" cy="82" r="3"/><circle cx="820" cy="101" r="4"/><circle cx="756" cy="434" r="3"/><circle cx="170" cy="458" r="4"/><circle cx="424" cy="70" r="2"/></g>
+  <g transform="translate(480 270)" filter="url(#glow)">
+    <path d="m0-150 132 76v148L0 150l-132-76V-74z" fill="#151d3c" stroke="#ffffff" stroke-opacity=".22" stroke-width="5"/>
+    <g transform="translate(-65 -64)"><path d="m0-51 45 26v51L0 52l-45-26v-51z" fill="url(#jewel)"/><path d="m0-51 0 103 45-26v-51z" fill="#be185d" opacity=".56"/></g>
+    <g transform="translate(57 -68)"><path d="m0-48 42 24v48L0 49l-42-25v-48z" fill="#fbbf24"/><path d="m0-48v97l42-25v-48z" fill="#d97706" opacity=".55"/></g>
+    <g transform="translate(-73 57)"><path d="m0-45 39 22v45L0 45l-39-23v-45z" fill="#38bdf8"/><path d="m0-45v90l39-23v-45z" fill="#0369a1" opacity=".55"/></g>
+    <g transform="translate(55 55)"><path d="m0-50 43 25v50L0 50l-43-25v-50z" fill="#a78bfa"/><path d="m0-50v100l43-25v-50z" fill="#6d28d9" opacity=".55"/></g>
+    <path d="m0-18 17 10v19L0 21l-17-10V-8z" fill="#fff" opacity=".92"/>
+  </g>
+  <text x="480" y="483" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="54" font-weight="800" letter-spacing="3">PRISM POP</text>
+  <text x="480" y="516" text-anchor="middle" fill="#c4b5fd" font-family="system-ui,sans-serif" font-size="19">MATCH · CASCADE · LEVEL UP</text>
+</svg>

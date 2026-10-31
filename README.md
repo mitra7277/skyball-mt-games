@@ -1,10 +1,16 @@
-# Sky Ball: 3D Challenge
+# MT Games
 
-A free 3D ball-balancing browser game with 10 levels, built as a Next.js 14 + TypeScript + Tailwind site.
-The game itself is a self-contained Three.js page in `public/game/skyball.html` (Three.js r128 is bundled in `public/game/three.min.js`, so the game makes no third-party requests). It is embedded on `/play` in an iframe.
+MT Games is a Next.js 14 + TypeScript browser-game site with four original games:
+
+- **Sky Ball** — a Three.js platform game with 40 original courses, checkpoints, stars, and saved level progression.
+- **Cloud Sprint** — a third-person 3D endless runner with lane changes, jumps, obstacles, collectible orbs, and a saved best distance.
+- **Prism Pop** — an eight-by-eight match-three puzzle with cascades, move-limited score goals, and saved level progress.
+- **Neon Drift** — a 3D arcade racer with traffic, lane changes, a speed ramp, and a saved best distance.
+
+The 3D games use the locally bundled Three.js asset in `public/game/three.min.js`; gameplay does not load a third-party game engine. Shared game settings, per-game tutorials, progress-based achievements, original guides, and game-specific FAQs are included.
 
 ## Pages
-Home `/`, Play `/play` (supports `/play?level=N`), How to Play, Levels, Tips & Guides, About, Contact, Privacy Policy, Terms of Use, custom 404, `sitemap.xml` and `robots.txt`.
+Home `/`, game library `/games`, game pages `/games/[slug]`, guides `/guides`, awards `/awards`, FAQ `/faq`, plus How to Play, Levels, Tips, About, Contact, Privacy, Terms, custom 404, `sitemap.xml`, and `robots.txt`. `/play` remains available as the original Sky Ball route.
 
 ## Requirements
 Node.js 18.18 or newer and npm.
@@ -24,11 +30,12 @@ npm start                        # serves the production build on http://localho
 
 ## Tests
 ```bash
-npm test                         # game logic: all 10 levels, collisions, checkpoints, save/unlock, keyboard, touch joystick
-npm start &                      # in another terminal (after npm run build)
-npm run test:site                # routes, links, 404, sitemap, robots, assets
+npm test                         # Sky Ball: all 40 levels, physics, progress, keyboard, and touch joystick
+npm run build                    # production compile and static route generation
+npm start                        # serve the production build
+npm run test:site                # routes, links, 404, sitemap, robots, and public assets
 ```
-The game test runs the real game script in Node with a stubbed DOM/Three.js, so it checks logic, not graphics. Always also play it in real browsers on desktop and a phone before launch.
+The Sky Ball headless test runs the real game script with a stubbed DOM/Three.js; it does not validate rendered graphics. The 3D mini-games use WebGL and should also be checked in real desktop and mobile browsers.
 
 ## Owner configuration (you must fill these in)
 | Variable | Purpose |
@@ -36,7 +43,7 @@ The game test runs the real game script in Node with a stubbed DOM/Three.js, so 
 | `NEXT_PUBLIC_SITE_URL` | Your real site address, e.g. `https://skyball-mt-games.vercel.app` (no trailing slash). Used for canonical URLs, sitemap and robots. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Optional override for the MT Games contact email shown on the Contact and Privacy pages. Defaults to the published address in `lib/site.ts`. |
 
-The brand name "MT Games" and published contact email are set in `lib/site.ts`. Set `NEXT_PUBLIC_CONTACT_EMAIL` in `.env.local` or your hosting environment to override the address. The Contact page links directly to email and opens a prefilled message in the visitor's email app. Keep the Privacy Policy and Terms of Use accurate for the services and features currently enabled on the site.
+The brand name "MT Games" and published contact email are set in `lib/site.ts`. Set `NEXT_PUBLIC_CONTACT_EMAIL` in `.env.local` or your hosting environment to override the address. The Contact page links directly to email and opens a prefilled message in the visitor's email app. Scores, settings, tutorials, and achievement unlocks use local browser storage and do not sync between devices. Keep the Privacy Policy and Terms of Use accurate for the services and features currently enabled on the site.
 
 ## Deploy to Vercel (step by step)
 1. Create a GitHub repository and push this project:
@@ -64,8 +71,8 @@ The site includes Google's AdSense script and a public `ads.txt` publisher entry
 ## Project structure
 ```
 app/            pages, layout, sitemap.ts, robots.ts, not-found.tsx
-components/     header, footer, game iframe, level grid, contact form
-lib/            site config, level info, tips content
-public/game/    skyball.html (the game) and three.min.js
+components/     site navigation, game experience settings, game frames, and game UI
+lib/            site config, game descriptions, level data
+public/game/    local Three.js engine and standalone 3D game pages
 tests/          game.test.js, site.test.js
 ```

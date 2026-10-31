@@ -11,6 +11,7 @@ export type Game = {
   objective: string;
   controls: string[];
   tips: string[];
+  guide: { steps: string[]; advanced: string[]; mistakes: string[] };
   faqs: Array<{ question: string; answer: string }>;
 };
 
@@ -27,10 +28,17 @@ export const GAMES: Game[] = [
     objective: "Reach the green finish pad in each course. Touch checkpoints to save a restart point, and collect stars for score.",
     controls: ["Keyboard: WASD or arrow keys to roll; Space, P, or Esc to pause.", "Touch: drag the on-screen joystick to steer.", "Mouse or touch: use the game menus and buttons."],
     tips: ["Make small steering corrections before narrow bridges.", "Wait for moving platforms to line up before rolling on.", "Use checkpoints as safe recovery points before attempting hazards."],
+    guide: {
+      steps: ["Choose an unlocked course and start from its opening platform.", "Build a little speed on broad ground, then center the ball before a bridge.", "Pause your steering on moving platforms until you can read their direction.", "Touch checkpoints to make the next recovery safer, then roll onto the green finish pad."],
+      advanced: ["Use short taps instead of holding a direction near edges; momentum continues after releasing the control.", "On rotating-bar sections, watch a complete sweep before crossing and aim for the widest opening.", "Stars are optional. Secure a difficult finish first, then replay an unlocked course for its collectibles and best time."],
+      mistakes: ["Over-correcting on narrow bridges adds sideways momentum.", "Jumping into a moving platform before it arrives can leave no safe landing.", "A checkpoint only helps after you touch its glowing marker."],
+    },
     faqs: [
       { question: "How many levels are in Sky Ball?", answer: "Sky Ball has 40 levels. Finishing a level unlocks the next one." },
       { question: "Where is my progress saved?", answer: "Unlocks, completions, best times, and settings are stored in local storage in this browser on this device." },
       { question: "Can I play on a phone?", answer: "Yes. Use the touch joystick in the game. A browser with WebGL enabled is required." },
+      { question: "What happens when I fall?", answer: "You return to the last checkpoint you activated; if you have not reached one, you restart from the start pad." },
+      { question: "Do stars block level completion?", answer: "No. Reach the finish pad to complete the course; stars add an optional collection goal." },
     ],
   },
   {
@@ -45,26 +53,40 @@ export const GAMES: Game[] = [
     objective: "Stay on the track for as long as possible, avoid barriers, and gather orbs to grow your score.",
     controls: ["Keyboard: Left/Right or A/D to switch lanes; Space or Up to jump; P or Esc to pause.", "Touch: use the on-screen lane and jump buttons; swipe left/right or up.", "Tap the pause and restart buttons at any time."],
     tips: ["Look ahead and move lanes before an obstacle reaches you.", "Jump only when a barrier is close; you can still steer in the air.", "Collectibles add points, but survival is the priority."],
+    guide: {
+      steps: ["Start a run when the track is clear.", "Watch the near edge of the road to judge when an object reaches your lane.", "Change lanes to avoid a barrier, or jump over one when the timing is safe.", "Collect gold orbs for bonus points and keep moving as the pace climbs."],
+      advanced: ["Move one lane at a time; a late double lane change can put you into a second obstacle.", "Save jumps for barriers that cannot be avoided with a safe lane change.", "An orb is a bonus, not a reason to run into a barrier. Choose a safe route first."],
+      mistakes: ["Jumping too early can leave you back on the ground at the barrier.", "Swiping repeatedly can queue lane changes you did not intend.", "The fastest-looking lane is not always the safest; track the next obstacle too."],
+    },
     faqs: [
       { question: "Does the runner have an ending?", answer: "No. It is an endless game; the run ends when you hit an obstacle." },
       { question: "Is my best score saved?", answer: "Yes. Your best distance is stored locally in this browser." },
+      { question: "How do I collect the gold orbs?", answer: "Stay in the orb's lane as it reaches the foreground. Each collected orb adds points to your run." },
+      { question: "Can I steer while jumping?", answer: "Yes. Lane changes remain available while the character is in the air." },
     ],
   },
   {
     slug: "block-puzzle",
-    title: "Block Bloom: Puzzle",
-    shortTitle: "Block Bloom",
-    tagline: "Place, clear, and plan ahead.",
-    description: "Fit the supplied block shapes onto a 10-by-10 board. Complete full rows or columns to clear space, build your score, and keep the board open for the next set.",
+    title: "Prism Pop: Match-3",
+    shortTitle: "Prism Pop",
+    tagline: "Make a match. Start a cascade.",
+    description: "Swap glowing gems on an eight-by-eight board to create lines of three or more. Chain falling matches, reach each score goal within 20 moves, and unlock increasingly challenging levels. Your highest unlocked level and best score stay in this browser.",
     category: "Puzzle",
-    thumbnail: "/games/block-puzzle.svg",
+    thumbnail: "/games/prism-pop.svg",
     isNew: true,
-    objective: "Place each available shape on the board, clear complete rows or columns, and score as much as possible before no shape fits.",
-    controls: ["Tap or click a shape to select it, then tap or click a board cell to place it.", "Keyboard: use Tab and Enter/Space to select a shape and a board cell.", "Choose Restart to begin a fresh board."],
-    tips: ["Keep several open areas for large shapes.", "Clear rows and columns when practical, but avoid sealing off corners.", "Check every remaining shape before committing to a tight space."],
+    objective: "Reach the level's score target in 20 successful swaps. Match at least three neighboring gems horizontally or vertically; cascades increase the points awarded.",
+    controls: ["Touch or mouse: tap a gem, then tap one of its neighboring gems to swap.", "The two gems must be adjacent; an unmatched swap returns no move and does not change the board.", "Use the shared Pause, Restart, and Settings controls above the board."],
+    tips: ["Look for moves that complete more than one line at once.", "A match near the bottom can make several gems fall and trigger a chain reaction.", "Plan around the 20-move limit: ordinary matches score, but cascades are especially valuable."],
+    guide: {
+      steps: ["Read the level's score target above the board.", "Tap one gem and then an adjacent gem; a legal swap must make a line of at least three.", "Matched gems disappear, the gems above fall, and new gems enter from the top.", "Keep matching until the goal is reached; each valid swap uses one move."],
+      advanced: ["Check both the horizontal and vertical lines created by a swap before choosing it.", "Clearing lower rows gives more pieces room to fall and can produce a chain reaction.", "A four- or five-gem match scores more than a simple three, so scan the whole board before committing."],
+      mistakes: ["Non-adjacent gems cannot be swapped.", "A swap that creates no match is returned and does not spend a move.", "When only a few moves remain, prioritize the score goal rather than making a visually pleasing match."],
+    },
     faqs: [
-      { question: "Can blocks be rotated?", answer: "The current game uses fixed orientations; choose a different shape when a rotated fit is not available." },
-      { question: "When does the puzzle end?", answer: "The game ends when none of the remaining shapes can be placed on the board." },
+      { question: "How do I swap two gems?", answer: "Select one gem and then select an adjacent gem above, below, left, or right. Diagonal swaps are not allowed." },
+      { question: "Do unsuccessful swaps use a move?", answer: "No. A swap only counts when it creates a match; otherwise the board stays in place." },
+      { question: "What is a chain reaction?", answer: "After a match clears, falling and newly added gems may form another match. Each consecutive clear adds a higher score multiplier." },
+      { question: "How is my progress saved?", answer: "Your highest unlocked level and best score are saved locally in this browser." },
     ],
   },
   {
@@ -79,9 +101,16 @@ export const GAMES: Game[] = [
     objective: "Avoid traffic for as long as possible and build the greatest distance without a collision.",
     controls: ["Keyboard: Left/Right or A/D to change lanes; P or Esc to pause.", "Touch: use the left and right buttons or swipe horizontally.", "Use Pause and Restart controls above the road."],
     tips: ["Move early into a clear lane instead of waiting until the last moment.", "Use the full width of the road to plan around traffic.", "Distance increases the challenge, so prioritize open lanes over risky moves."],
+    guide: {
+      steps: ["Start with the center lane and scan the road ahead.", "Move left or right before a traffic car reaches your row.", "Keep to the lane with the clearest path and continue as speed rises.", "Pause for a break; restart when you are ready for a fresh run."],
+      advanced: ["Plan your next lane change based on both the approaching car and the traffic behind it.", "Avoid rapid back-and-forth steering; the car takes a moment to settle into each lane.", "A safe, steady route earns more distance than a last-second dodge."],
+      mistakes: ["Waiting until a vehicle is at the bottom of the screen leaves too little time to move.", "Repeated lane commands can lead into a car that was not previously in your lane.", "The player car moves smoothly between lanes, so a lane change is not instantaneous."],
+    },
     faqs: [
       { question: "Is racing against other players?", answer: "No. This is a single-player arcade driving game." },
       { question: "Does the car accelerate?", answer: "Traffic and road speed increase as your distance grows." },
+      { question: "How do I control the car on a phone?", answer: "Tap the left or right steering button, or swipe horizontally across the game." },
+      { question: "Why did my run end?", answer: "The run ends when your car and a traffic car occupy the same lane as they pass." },
     ],
   },
 ];

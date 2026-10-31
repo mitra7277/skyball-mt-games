@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Run, jump, dodge, and collect orbs in Cloud Sprint, a free original 3D browser game.">
+  <title>Cloud Sprint: 3D Endless Runner</title>
+  <style>
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080d21;color:#fff;font:600 15px system-ui,sans-serif}
+    #game{position:relative;width:100%;height:100%;min-height:320px;overflow:hidden}
+    canvas{display:block;width:100%;height:100%;touch-action:none}
+    #hud{position:absolute;inset:env(safe-area-inset-top,0) 0 auto;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;text-shadow:0 2px 6px #000}
+    #stats{display:flex;flex-wrap:wrap;gap:8px 14px}.stat{font-size:13px;color:#dbeafe}.stat strong{font-size:17px;color:#fff}
+    button{min-height:44px;border:1px solid #ffffff3b;border-radius:11px;background:#101a37;color:#fff;font:700 14px system-ui,sans-serif;padding:8px 14px;cursor:pointer;touch-action:manipulation}
+    button:hover{background:#243256}button:focus-visible{outline:3px solid #fde68a;outline-offset:2px}
+    #mobile{position:absolute;z-index:2;inset:auto 0 max(10px,env(safe-area-inset-bottom)) 0;display:none;align-items:center;justify-content:center;gap:10px}
+    #mobile button{min-width:56px;min-height:48px;background:#101a37dc;font-size:18px}
+    #jump{min-width:90px!important;background:#0891b2!important;color:#04111f}
+    #overlay{position:absolute;z-index:3;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(145deg,#07152bd9,#21154bd9);backdrop-filter:blur(7px);text-align:center}
+    #overlay[hidden]{display:none}.card{width:min(440px,100%);padding:24px;border:1px solid #ffffff33;border-radius:22px;background:#0d1429f2;box-shadow:0 24px 80px #0008}
+    .eyebrow{margin:0 0 8px;color:#67e8f9;font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(28px,7vw,42px);line-height:1.05}.card p:not(.eyebrow){color:#d1d5db;line-height:1.55}.primary{margin-top:8px;background:#fcd34d;color:#111827;border:0}
+    #hint{position:absolute;z-index:2;inset:auto 10px 8px;text-align:center;color:#cbd5e1;font-size:12px;text-shadow:0 1px 5px #000}
+    @media(max-width:600px){#mobile{display:flex}#hint{bottom:68px}#hud{padding:9px}.stat{font-size:11px}#stats{gap:4px 9px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main id="game" aria-label="Cloud Sprint 3D endless runner">
+    <canvas id="scene" aria-label="Three-dimensional running track. Change lanes and jump to avoid obstacles."></canvas>
+    <div id="hud">
+      <div id="stats">
+        <span class="stat">Distance <strong id="distance">0 m</strong></span>
+        <span class="stat">Best <strong id="best">0 m</strong></span>
+        <span class="stat">Orbs <strong id="orbs">0</strong></span>
+      </div>
+      <button id="pause" type="button" aria-label="Pause game">Pause</button>
+    </div>
+    <div id="mobile">
+      <button type="button" data-command="left" aria-label="Move left">←</button>
+      <button id="jump" type="button" data-command="jump">Jump</button>
+      <button type="button" data-command="right" aria-label="Move right">→</button>
+    </div>
+    <p id="hint">A / D or ← / → to change lanes · Space / ↑ to jump · P to pause</p>
+    <div id="overlay">
+      <div class="card">
+        <p class="eyebrow">MT Games · 3D runner</p>
+        <h1 id="heading">Cloud Sprint</h1>
+        <p id="description">Change lanes, jump barriers, and collect the glowing orbs. The pace builds as you travel.</p>
+        <button id="action" class="primary" type="button">Start running</button>
+      </div>
+    </div>
+  </main>
+  <script src="/game/three.min.js"></script>
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const canvas = $("scene");
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: (navigator.hardwareConcurrency || 4) > 4, powerPreference: "high-performance" });
+      } catch (error) {
+        $("heading").textContent = "WebGL is unavailable";
+        $("description").textContent = "Cloud Sprint needs WebGL to draw the 3D track. Try an up-to-date browser with hardware acceleration enabled.";
+        $("action").hidden = true;
+        console.error("Could not initialize Cloud Sprint WebGL.", error);
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x101833);
+      scene.fog = new THREE.Fog(0x101833, 24, 105);
+      const camera = new THREE.PerspectiveCamera(54, 1, 0.1, 150);
+      camera.position.set(0, 6, 12);
+      const hemisphere = new THREE.HemisphereLight(0xc8eaff, 0x182043, 1.45);
+      scene.add(hemisphere);
+      const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+      sun.position.set(-5, 12, 8);
+      sun.castShadow = true;
+      sun.shadow.mapSize.set(512, 512);
+      scene.add(sun);
+
+      const material = (color, roughness = 0.72, metalness = 0.05) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
+      const roadMaterial = material(0x202641, 0.9);
+      const laneMaterial = material(0x84e8f5, 0.4, 0.2);
+      const track = new THREE.Group();
+      scene.add(track);
+      const segmentLength = 20;
+      const segments = [];
+      for (let index = 0; index < 10; index++) {
+        const segment = new THREE.Group();
+        segment.position.z = -index * segmentLength;
+        const road = new THREE.Mesh(new THREE.BoxGeometry(12, 0.35, segmentLength), roadMaterial);
+        road.position.y = -0.2;
+        road.receiveShadow = true;
+        segment.add(road);
+        for (const x of [-2, 2]) {
+          const divider = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.025, 5), laneMaterial);
+          divider.position.set(x, 0.01, 0);
+          segment.add(divider);
+        }
+        for (const x of [-5.8, 5.8]) {
+          const edge = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.08, segmentLength), laneMaterial);
+          edge.position.set(x, 0.03, 0);
+          segment.add(edge);
+        }
+        track.add(segment);
+        segments.push(segment);
+      }
+
+      const scenery = new THREE.Group();
+      scene.add(scenery);
+      for (let index = 0; index < 18; index++) {
+        const side = index % 2 ? 1 : -1;
+        const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 1.8, 5 + index % 3, 5), material(index % 2 ? 0x273b71 : 0x31416c));
+        pillar.position.set(side * (9 + index % 3), 1.6, -index * 12 - 5);
+        scenery.add(pillar);
+      }
+
+      const player = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.52, 16, 12), material(0x22d3ee, 0.35, 0.12));
+      body.scale.set(0.82, 1.12, 0.72);
+      body.position.y = 0.82;
+      player.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.34, 14, 12), material(0xffd5bd, 0.55));
+      head.position.set(0, 1.55, -0.03);
+      player.add(head);
+      const visor = new THREE.Mesh(new THREE.BoxGeometry(0.43, 0.13, 0.1), material(0x10213e, 0.25, 0.25));
+      visor.position.set(0, 1.59, -0.32);
+      player.add(visor);
+      for (const side of [-1, 1]) {
+        const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 0.67, 8), material(0x67e8f9));
+        arm.position.set(side * 0.48, 0.9, 0);
+        arm.rotation.z = side * -0.25;
+        player.add(arm);
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.48, 0.28), material(0x4338ca));
+        leg.position.set(side * 0.2, 0.28, 0.04);
+        player.add(leg);
+      }
+      player.position.set(0, 0, 3.2);
+      player.traverse((part) => { if (part.isMesh) part.castShadow = true; });
+      scene.add(player);
+
+      const game = { phase: "ready", lane: 1, laneX: 0, jumpY: 0, jumpVelocity: 0, distance: 0, orbs: 0, speed: 15, nextSpawn: 1, time: 0, lastUi: 0, last: 0, best: 0, totalOrbs: 0, quality: "medium", vibration: false, entities: [] };
+      try {
+        game.best = Number(localStorage.getItem("mt-runner-best")) || 0;
+        game.totalOrbs = Number(localStorage.getItem("mt-runner-orbs")) || 0;
+      } catch (error) { console.warn("Could not read Cloud Sprint progress.", error); }
+      $("best").textContent = `${game.best} m`;
+      $("orbs").textContent = String(game.totalOrbs);
+
+      function emit(type, detail) { parent.postMessage({ type, detail }, location.origin); }
+      window.addEventListener("pointerdown", () => emit("mt-game-interaction"), { once: true });
+      window.addEventListener("keydown", () => emit("mt-game-interaction"), { once: true });
+      function resize() {
+        const box = $("game").getBoundingClientRect();
+        const cap = game.quality === "low" ? 1 : game.quality === "high" ? 2 : 1.5;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, cap));
+        renderer.shadowMap.enabled = game.quality === "high";
+        sun.castShadow = game.quality !== "low";
+        renderer.setSize(box.width, box.height, false);
+        camera.aspect = box.width / Math.max(1, box.height);
+        camera.updateProjectionMatrix();
+      }
+      function setPhase(phase) {
+        game.phase = phase;
+        emit("mt-game-phase", { phase });
+        const visible = phase !== "running";
+        $("overlay").hidden = !visible;
+        $("pause").textContent = phase === "paused" ? "Resume" : "Pause";
+        if (phase === "ready") {
+          $("heading").textContent = "Cloud Sprint";
+          $("description").textContent = "Change lanes, jump barriers, and collect the glowing orbs. The pace builds as you travel.";
+          $("action").textContent = "Start running";
+        } else if (phase === "paused") {
+          $("heading").textContent = "Run paused";
+          $("description").textContent = "Your distance and lane are saved in this run. Take a breather, then continue.";
+          $("action").textContent = "Resume run";
+        } else if (phase === "over") {
+          $("heading").textContent = `${Math.floor(game.distance)} metres`;
+          $("description").textContent = `You collected ${game.orbs} orb${game.orbs === 1 ? "" : "s"} this run. Dodge the next obstacle and see if you can beat your best.`;
+          $("action").textContent = "Run again";
+        }
+      }
+      function finish() {
+        game.distance = Math.floor(game.distance);
+        game.phase = "over";
+        if (game.distance > game.best) {
+          game.best = game.distance;
+          try { localStorage.setItem("mt-runner-best", String(game.best)); }
+          catch (error) { console.warn("Could not save Cloud Sprint best distance.", error); }
+        }
+        $("best").textContent = `${game.best} m`;
+        emit("mt-game-engine", { active: false });
+        emit("mt-game-sound", { frequency: 110, duration: 0.28, type: "sawtooth" });
+        if (game.vibration && navigator.vibrate) navigator.vibrate([35, 40, 35]);
+        setPhase("over");
+      }
+      function start() {
+        emit("mt-game-interaction");
+        game.lane = 1; game.laneX = 0; game.jumpY = 0; game.jumpVelocity = 0;
+        game.distance = 0; game.orbs = 0; game.speed = 15; game.nextSpawn = 0.7;
+        game.time = 0; game.entities.forEach((entity) => scene.remove(entity.mesh)); game.entities = [];
+        $("distance").textContent = "0 m";
+        setPhase("running");
+      }
+      function command(action) {
+        if (action === "start" || action === "restart") { start(); return; }
+        if (action === "pause") {
+          if (game.phase === "running") {
+            setPhase("paused");
+            emit("mt-game-engine", { active: false });
+          } else if (game.phase === "paused") {
+            setPhase("running");
+            emit("mt-game-engine", { active: true, frequency: 210 + game.speed * 8 });
+          }
+          return;
+        }
+        if (game.phase !== "running") return;
+        if (action === "left") game.lane = Math.max(0, game.lane - 1);
+        if (action === "right") game.lane = Math.min(2, game.lane + 1);
+        if (action === "jump" && game.jumpY <= 0.02) game.jumpVelocity = 8.2;
+      }
+      function spawnEntity() {
+        const lane = Math.floor(Math.random() * 3);
+        const coin = Math.random() < 0.36;
+        const kind = coin ? "orb" : Math.random() < 0.5 ? "hurdle" : "gate";
+        let mesh;
+        if (kind === "orb") {
+          mesh = new THREE.Mesh(new THREE.TorusGeometry(0.39, 0.12, 9, 18), material(0xfde047, 0.25, 0.35));
+          mesh.position.y = 1.25;
+        } else {
+          const width = kind === "hurdle" ? 2.25 : 1.7;
+          const height = kind === "hurdle" ? 0.58 : 1.85;
+          mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, 0.8), material(kind === "hurdle" ? 0xfb7185 : 0xf97316, 0.45, 0.12));
+          mesh.position.y = height / 2;
+          const stripe = new THREE.Mesh(new THREE.BoxGeometry(width * 0.72, 0.12, 0.84), material(0xffe4e6, 0.35));
+          stripe.position.y = height * 0.65;
+          mesh.add(stripe);
+        }
+        mesh.position.x = (lane - 1) * 4;
+        mesh.position.z = -48;
+        scene.add(mesh);
+        mesh.castShadow = true;
+        game.entities.push({ mesh, lane, kind, checked: false });
+      }
+      function update(dt, now) {
+        if (game.phase === "running") {
+          game.time += dt;
+          game.speed = 15 + Math.min(12, game.time * 0.23);
+          game.distance += dt * game.speed * 1.4;
+          game.nextSpawn -= dt;
+          if (game.nextSpawn <= 0) {
+            spawnEntity();
+            game.nextSpawn = Math.max(0.54, 1.35 - game.time / 100) + Math.random() * 0.28;
+          }
+          const targetX = (game.lane - 1) * 4;
+          game.laneX += (targetX - game.laneX) * Math.min(1, dt * 12);
+          player.position.x = game.laneX;
+          player.position.y = game.jumpY;
+          player.rotation.z = (targetX - game.laneX) * -0.035;
+          if (game.jumpVelocity || game.jumpY > 0) {
+            game.jumpY = Math.max(0, game.jumpY + game.jumpVelocity * dt);
+            game.jumpVelocity -= 21 * dt;
+            if (game.jumpY === 0) game.jumpVelocity = 0;
+          }
+          for (const segment of segments) {
+            segment.position.z += game.speed * dt;
+            if (segment.position.z > segmentLength) segment.position.z -= segmentLength * segments.length;
+          }
+          scenery.position.z += game.speed * dt;
+          if (scenery.position.z > 12) scenery.position.z -= 216;
+          for (const entity of game.entities) {
+            entity.mesh.position.z += game.speed * dt;
+            if (entity.kind === "orb") entity.mesh.rotation.y += dt * 2.8;
+            if (!entity.checked && entity.mesh.position.z >= 2.7) {
+              entity.checked = true;
+              if (entity.lane === game.lane) {
+                if (entity.kind === "orb") {
+                  game.orbs++;
+                  game.totalOrbs++;
+                  entity.mesh.visible = false;
+                  try { localStorage.setItem("mt-runner-orbs", String(game.totalOrbs)); }
+                  catch (error) { console.warn("Could not save collected Cloud Sprint orbs.", error); }
+                  $("orbs").textContent = String(game.totalOrbs);
+                  emit("mt-game-sound", { frequency: 880, duration: 0.12 });
+                  if (game.vibration && navigator.vibrate) navigator.vibrate(12);
+                } else if (entity.kind === "gate" || game.jumpY < 0.8) {
+                  finish();
+                }
+              }
+            }
+          }
+          game.entities = game.entities.filter((entity) => {
+            if (entity.mesh.position.z < 12) return true;
+            scene.remove(entity.mesh);
+            return false;
+          });
+          if (now - game.lastUi > 100) {
+            $("distance").textContent = `${Math.floor(game.distance)} m`;
+            game.lastUi = now;
+          }
+          if (now - game.last > 160) {
+            emit("mt-game-engine", { active: true, frequency: 170 + game.speed * 9 });
+            game.last = now;
+          }
+        }
+        const cameraX = game.laneX * 0.42;
+        camera.position.x += (cameraX - camera.position.x) * Math.min(1, dt * 2.4);
+        camera.position.y += (6.2 + game.jumpY * 0.2 - camera.position.y) * Math.min(1, dt * 2);
+        camera.lookAt(game.laneX * 0.25, 1.1 + game.jumpY * 0.2, -13);
+        renderer.render(scene, camera);
+      }
+      let last = 0;
+      function frame(now) {
+        requestAnimationFrame(frame);
+        const dt = last ? Math.min(0.045, (now - last) / 1000) : 0;
+        last = now;
+        update(dt, now);
+      }
+      let swipeStart = null;
+      canvas.addEventListener("pointerdown", (event) => { swipeStart = { x: event.clientX, y: event.clientY }; });
+      canvas.addEventListener("pointerup", (event) => {
+        if (!swipeStart) return;
+        const dx = event.clientX - swipeStart.x;
+        const dy = event.clientY - swipeStart.y;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) > 24) command(Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? "left" : "right") : dy < 0 ? "jump" : "pause");
+        swipeStart = null;
+      });
+      window.addEventListener("keydown", (event) => {
+        if (["ArrowLeft", "ArrowRight", "ArrowUp", " "].includes(event.key)) event.preventDefault();
+        if (["ArrowLeft", "a", "A"].includes(event.key)) command("left");
+        else if (["ArrowRight", "d", "D"].includes(event.key)) command("right");
+        else if (["ArrowUp", " ", "w", "W"].includes(event.key)) command("jump");
+        else if (["p", "P", "Escape"].includes(event.key)) command("pause");
+      });
+      window.addEventListener("blur", () => { if (game.phase === "running") command("pause"); });
+      window.addEventListener("message", (event) => {
+        if (event.origin !== location.origin || !event.data) return;
+        if (event.data.type === "mt-game-command") command(event.data.command);
+        if (event.data.type === "mt-game-preferences" && event.data.preferences) {
+          game.quality = event.data.preferences.graphics || "medium";
+          game.vibration = event.data.preferences.vibration === true;
+          resize();
+        }
+      });
+      $("pause").addEventListener("click", () => command("pause"));
+      $("action").addEventListener("click", () => command(game.phase === "paused" ? "pause" : "start"));
+      document.querySelectorAll("[data-command]").forEach((button) => button.addEventListener("click", () => command(button.dataset.command)));
+      window.addEventListener("resize", resize);
+      resize();
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

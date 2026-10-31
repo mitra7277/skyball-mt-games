@@ -13,13 +13,13 @@ export default function Privacy() {
       <p>Last updated: {LAST_UPDATED}</p>
       <p>{SITE_NAME} is published by {OWNER_NAME}. This policy explains what this website and its games do with information.</p>
       <h2>Summary</h2>
-      <p>This site does not require an account to play. The game stores progress on your device, and the site may use third-party advertising and hosting services to deliver content securely.</p>
+      <p>This site does not require an account to play. Games store progress and settings on your device, and the site may use third-party advertising and hosting services to deliver content securely.</p>
       <h2>Data stored on your device</h2>
-      <p>Sky Ball uses the local-storage item <code>sb</code> to remember unlocked levels, best times, mute settings, and tutorial state. The arcade and racing games use separate local-storage items for best scores. This data stays in your browser on your device and is not sent to us. You can remove it by clearing this site&apos;s data in your browser.</p>
+      <p>Sky Ball uses the local-storage item <code>sb</code> for unlocked levels, completions, best times, and in-game sound settings. Cloud Sprint, Neon Drift, and Prism Pop store their best scores, collected orbs, and puzzle progress in separate local-storage items. Shared sound, graphics, vibration, and per-game tutorial preferences, plus achievement unlocks, are also saved locally. This data stays in your browser on your device and is not sent to MT Games. You can remove it by clearing this site&apos;s data in your browser.</p>
       <h2>Cookies</h2>
       <p>The site does not set its own tracking cookies for gameplay. Our hosting provider may use technical cookies or logs needed to deliver the site, and Google AdSense may use cookies or similar technologies when ads are served or measured.</p>
       <h2>Data collection</h2>
-      <p>{OWNER_NAME} does not intentionally collect personal data through gameplay. Like most websites, the hosting provider (Vercel) processes standard server logs such as IP address, browser type, and requested pages to serve and protect the site. Sky Ball&apos;s 3D library is served from this site, not from a third party.</p>
+      <p>{OWNER_NAME} does not intentionally collect personal data through gameplay. Achievement progress is calculated from local game saves and is not uploaded or shared between players. Like most websites, the hosting provider (Vercel) processes standard server logs such as IP address, browser type, and requested pages to serve and protect the site. Sky Ball&apos;s 3D library is served from this site, not from a third party.</p>
       <h2>Contact form</h2>
       <p>The contact form only opens a message in your own email app. We receive the message, and your email address, only if you choose to send it. We use it to reply to you.</p>
       <h2>Advertising</h2>
